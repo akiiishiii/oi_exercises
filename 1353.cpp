@@ -1,10 +1,11 @@
 #include <iostream>
 
 template <typename T>
-inline T max(T a, T b) { return a > b ? a : b;}
-	int f[205][205] = {0}, m = 0, n = 0;
+inline T max(const T a, const T b) { return a > b ? a : b;}
+
 int main(int argc, const char * argv[]) {
 	char a[205], b[205], c;
+	int f[205][205] = {0}, m = 0, n = 0;
 	while ((c = std::cin.get()) != '\n')
 		a[++m] = c;
 	while ((c = std::cin.get()) != '\n')
