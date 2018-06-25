@@ -1,3 +1,4 @@
+// 1024.cpp
 #include <iostream>
 
 int f(int x) { return x > 0 ? x + 1 : x == 0 ? 0 : x - 1;}

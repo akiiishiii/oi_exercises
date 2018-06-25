@@ -1,7 +1,8 @@
+// 101B.cpp
 #include <iostream>
 
 int main(int argc, const char * argv[]) {
-	int n, sum, temp;
+	int n, sum = 0, temp;
 	std::cin >> n;
 	temp = n;
 	while (temp) {

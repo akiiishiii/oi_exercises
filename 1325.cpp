@@ -1,3 +1,4 @@
+// 1325.cpp
 #include <iostream>
 #include <iomanip>
 #include <cmath>
@@ -18,4 +19,5 @@ double binary_search(double(*fun) (double), double l, double r) {
 		return binary_search(fun, (l + r) / 2, r);
 	else if (mid < 0)
 		return binary_search(fun, l, (l + r) / 2);
+	return 0;
 }

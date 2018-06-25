@@ -1,3 +1,4 @@
+// 1059.cpp
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -11,8 +12,13 @@ struct student {
 	bool operator<(const student & s) const { return score < s.score;}
 	bool operator>(const student & s) const { return score > s.score;}
 };
+
 bool comp(const student & s1, const student & s2) { return s1 > s2;}
-std::ostream & operator<<(std::ostream & os, student & s) { os << s.num << std::endl << s.score << std::endl;}
+
+std::ostream & operator<<(std::ostream & os, student & s) {
+	os << s.num << std::endl << s.score << std::endl;
+	return os;
+}
 
 int main(int argc, const char * argv[]) {
 	int n;

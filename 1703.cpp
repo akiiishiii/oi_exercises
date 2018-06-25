@@ -1,3 +1,4 @@
+// 1703.cpp
 #include <iostream>
 #define check(x, y) (x > 0 && x <= n && y > 0 && y <= n)
 
@@ -16,7 +17,7 @@ int main(int argc, const char * argv[]) {
 			std::cin >> ma[i][j];
 			vi[i][j] = false;
 		}
-	
+
 	for (int i = 1; i <= n; i++)
     	for (int j = 1; j <= n; j++)
 			if (!vi[i][j]) {
@@ -31,7 +32,7 @@ int main(int argc, const char * argv[]) {
 		std::cin >> x >> y;
 		std::cout << ans[x][y] << std::endl;
 	}
-	
+
 	return 0;
 }
 

@@ -1,3 +1,4 @@
+// 1006.cpp
 #include <iostream>
 #include <iomanip>
 
