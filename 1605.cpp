@@ -7,7 +7,7 @@ template <typename T>
 inline T min(T a, T b) { return a < b ? a : b;}
 
 int main(int argc, const char * argv[]) {
-	int total[2][3], costs[200005][3];
+	int costs[200005][3];
 	int n, u = 0, d = 0, c = 0;
 	std::cin >> n;
 	for (int i = 0; i < n; i++) {
