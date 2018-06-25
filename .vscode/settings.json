@@ -31,7 +31,8 @@
     "files.associations": {
         "iostream": "cpp",
         "istream": "cpp",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "string": "cpp"
     },
     "C_Cpp.intelliSenseEngineFallback": "Disabled" // 效果效果比cpptools要好
 }
