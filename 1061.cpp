@@ -2,8 +2,8 @@
 #include <iostream>
 
 int main(int argc, const char * argv[]) {
-	int n, m;
-	std::cin >> n >> m;
+    int n, m;
+    std::cin >> n >> m;
 
-	return 0;
+    return 0;
 }
