@@ -1,7 +1,7 @@
 {
     "configurations": [
         {
-            "name": "MinGW & Clang",
+            "name": "Clang with MinGW",
             "intelliSenseMode": "clang-x64",
             "compilerPath": "C:/Program Files/LLVM/bin/gcc.exe",
             "includePath": [
