@@ -64,13 +64,15 @@
         "type_traits": "cpp",
         "tuple": "cpp",
         "typeinfo": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "bitset": "cpp"
     },
     "C_Cpp.intelliSenseEngineFallback": "Disabled", // 效果效果比cpptools要好
     "files.autoGuessEncoding": false,
     "workbench.colorTheme": "One Dark Pro", // 主题
     "files.trimTrailingWhitespace": true, // 保存时，删除每一行末尾的空格
     "terminal.integrated.shell.windows": "C:\\Windows\\System32\\cmd.exe",
-//  "editor.fontFamily": "等距更纱黑体 SC",
+    "editor.minimap.enabled": false,
+    //  "editor.fontFamily": "等距更纱黑体 SC",
     "editor.dragAndDrop": false
 }
