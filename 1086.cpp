@@ -3,9 +3,11 @@
 #include <vector>
 
 int main(int argc, const char * argv[]) {
-    double n;
+    double n, d;
+    int m;
     std::cin >> n;
-    std::vector<int> a, b;
+    m = int(n);
+    d = n - m;
 
     return 0;
 }
