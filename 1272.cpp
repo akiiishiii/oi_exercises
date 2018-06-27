@@ -1,4 +1,4 @@
-// 1270.cpp
+// 1272.cpp
 #include <iostream>
 #include <cstring>
 
