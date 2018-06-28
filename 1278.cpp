@@ -2,9 +2,9 @@
 #include <iostream>
 #include <cstring>
 
-char a[110][110];                                 //迷宫，根据题目要求，这么大足够了。使用DFS也不会超时
-int pa[110][110], ans[101], n;                                 //0 1 2  标记位置如果是0，代表没走过的位置；如果是1，代表走过的位置；如果是2，代表死胡同（这里不仅仅是上下左右有三个方向都是墙的死胡同，墙的位置还可以是走过的位置）
-int zx[4] = {1, -1, 0, 0}, zy[4] = {0, 0, 1, -1}; //代表坐标的增量，上下左右
+char a[110][110];
+int pa[110][110], ans[101], n;
+int zx[4] = {1, -1, 0, 0}, zy[4] = {0, 0, 1, -1};
 bool flag;
 void dfs(int x1, int y1, int x2, int y2);
 
@@ -17,11 +17,9 @@ int main(int argc, const char *argv[]) {
         memset(pa, 0, sizeof(pa));
         flag = true;
         std::cin >> n;
-        for (int j = 1; j <= n; j++) {
+        for (int j = 1; j <= n; j++)
             for (int k = 1; k <= n; k++)
                 std::cin >> a[j][k];
-            std::cin.get();
-        }
         std::cin >> x1 >> y1 >> x2 >> y2;
         dfs(x1 + 1, y1 + 1, x2 + 1, y2 + 1);
         if (flag)
