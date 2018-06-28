@@ -65,7 +65,8 @@
         "tuple": "cpp",
         "typeinfo": "cpp",
         "utility": "cpp",
-        "bitset": "cpp"
+        "bitset": "cpp",
+        "cstring": "cpp"
     },
     "C_Cpp.intelliSenseEngineFallback": "Disabled", // 效果效果比cpptools要好
     "files.autoGuessEncoding": false,
