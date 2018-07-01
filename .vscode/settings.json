@@ -69,7 +69,9 @@
         "cstring": "cpp",
         "map": "cpp",
         "charconv": "cpp",
-        "filesystem": "cpp"
+        "filesystem": "cpp",
+        "valarray": "cpp",
+        "chrono": "cpp"
     },
     "C_Cpp.intelliSenseEngineFallback": "Disabled", // 效果效果比cpptools要好
     "files.autoGuessEncoding": false,

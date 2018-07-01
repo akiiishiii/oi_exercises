@@ -1,7 +1,7 @@
 // 1255.cpp
+#include <iostream>
 #include <cmath>
 #include <cstring>
-#include <iostream>
 
 int fx[4] = {-1, 0, 1, 0};
 int fy[4] = {0, -1, 0, 1};
@@ -11,7 +11,7 @@ int m, n, ans = 0x3fffffff;
 
 void dfs(int x, int y, int sum, bool frog);
 
-int main() {
+int main(int argc, const char * argv[]) {
     memset(f, 0x7f, sizeof(f));
     std::cin >> m >> n;
     for (int i = 1; i <= n; ++i) {
