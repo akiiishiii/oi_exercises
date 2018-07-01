@@ -67,7 +67,9 @@
         "utility": "cpp",
         "bitset": "cpp",
         "cstring": "cpp",
-        "map": "cpp"
+        "map": "cpp",
+        "charconv": "cpp",
+        "filesystem": "cpp"
     },
     "C_Cpp.intelliSenseEngineFallback": "Disabled", // 效果效果比cpptools要好
     "files.autoGuessEncoding": false,
