@@ -105,5 +105,6 @@
     //  "editor.fontFamily": "等距更纱黑体 SC",
     "files.encoding": "utf8",
     "editor.cursorStyle": "underline",
-    "editor.dragAndDrop": false
+    "editor.dragAndDrop": false,
+    "git.enableSmartCommit": true
 }
