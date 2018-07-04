@@ -23,7 +23,7 @@ void getn() {
         calc(st.front());
     else if (st.front() >= '0' && st.front() <= '9') {
         for (std::string::iterator it = st.begin(); it != st.end(); it++)
-            if (*it < '0' || *it > '9') {
+            if ((*it < '0' || *it > '9') && *it != '.') {
                 s.push(stod(st.substr(0, it - st.begin())));
                 st.erase(st.begin(), it);
             }
