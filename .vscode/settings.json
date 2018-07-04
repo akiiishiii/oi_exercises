@@ -94,7 +94,8 @@
         "scoped_allocator": "cpp",
         "shared_mutex": "cpp",
         "thread": "cpp",
-        "typeindex": "cpp"
+        "typeindex": "cpp",
+        "stack": "cpp"
     },
     "C_Cpp.intelliSenseEngineFallback": "Disabled", // 效果效果比cpptools要好
     "files.autoGuessEncoding": false,
