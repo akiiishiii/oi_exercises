@@ -9,20 +9,12 @@ bool is_fu(string a){
     return false;
 }//
 double dfs(int now){
-    if(is_fu(s[now])){
-        switch(s[now][0]){
-            case '+': return dfs(++head) + dfs(++head);
-            case '-': return dfs(++head) - dfs(++head);
-            case '*': return dfs(++head) * dfs(++head);
-            case '/': return dfs(++head) / dfs(++head);
-        }
-    }else{
-        switch(s[now][0]){
-            case '+': return stof(s[++head]) + stof(s[++head]);
-            case '-': return stof(s[++head]) - stof(s[++head]);
-            case '*': return stof(s[++head]) * stof(s[++head]);
-            case '/': return stof(s[++head]) / stof(s[++head]);
-        }
+    switch(s[now][0]){
+        case '+': return dfs(++head) + dfs(++head);
+        case '-': return dfs(++head) - dfs(++head);
+        case '*': return dfs(++head) * dfs(++head);
+        case '/': return dfs(++head) / dfs(++head);
+        default: return stof(s[now]);
     }
 }
 int main(){

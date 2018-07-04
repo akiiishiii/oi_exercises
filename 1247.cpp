@@ -17,7 +17,7 @@ double calc() {
         case'+':
             return calc() + calc();
         case'-':
-            return calc() - calc();
+            return s.length() > 1 ? stod(s) : calc() - calc();
         case'*':
             return calc() * calc();
         case'/':
