@@ -107,5 +107,6 @@
     "files.encoding": "utf8",
     "editor.cursorStyle": "underline",
     "editor.dragAndDrop": false,
-    "git.enableSmartCommit": true
+    "git.enableSmartCommit": true,
+    "workbench.iconTheme": "vsclassic-icon-theme"
 }
