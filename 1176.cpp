@@ -24,7 +24,7 @@ int main(int argc, const char * argv[]) {
         ans = (*it).a + r2 < ans ? (*it).a + r2 : ans;
         r2 = r2 < (*it).b ? (*it).b : r2;
     }
-    ans = ans > r2 ? ans : r2;
+    ans = ans < r2 ? ans : r2;
     std::cout << ans << std::endl;
     return 0;
 }
