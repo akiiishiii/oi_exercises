@@ -5,7 +5,7 @@ int main(int argc, const char *argv[]) {
     int x, y, z;
     long long f[55] = {0}, c[55] = {0};
     std::cin >> x >> y >> z;
-    for (int i = 1; i <= x; i++) {
+    for (int i = 0; i <= x; i++) {
         f[i] = 1;
         c[i] = 0;
     }
