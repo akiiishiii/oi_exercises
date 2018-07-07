@@ -23,6 +23,7 @@ int main(int argc, const char * argv[]) {
                 ex[*it1 + *it2] = true;
                 cnt++;
             }
+
     fout << cnt << std::endl;
     return 0;
 }
