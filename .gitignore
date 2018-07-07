@@ -1,2 +1,6 @@
 # exe files
 *.exe
+
+# test input/output files
+*.in
+*.out
