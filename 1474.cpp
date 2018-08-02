@@ -41,7 +41,7 @@ double find(int l, int r) {
         return dist2(arr[l], arr[r]);
     int mid = (l + r) / 2, tot = 0;
     double t = find(mid + 1, r), ans = find(l, mid), xp = (arr[mid].x + arr[mid + 1].x) / 2;
-    mid = mid > xp ? mid : xp;
+    ans = t < ans ? t : ans;
     for (int i = l; i <= r; i++)
         if (abs(arr[i].x - xp) < ans) {
             tot++;
