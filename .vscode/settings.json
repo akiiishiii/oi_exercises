@@ -99,7 +99,7 @@
     },
     "C_Cpp.intelliSenseEngineFallback": "Disabled", // 效果效果比cpptools要好
     "files.autoGuessEncoding": false,
-    "workbench.colorTheme": "One Dark Pro", // 主题
+    "workbench.colorTheme": "Dusk", // 主题
     "files.trimTrailingWhitespace": true, // 保存时，删除每一行末尾的空格
     "terminal.integrated.shell.windows": "C:\\Windows\\System32\\cmd.exe",
     //  "editor.minimap.enabled": false,
@@ -108,5 +108,7 @@
     "editor.cursorStyle": "underline",
     "editor.dragAndDrop": false,
     "git.enableSmartCommit": true,
-    "workbench.iconTheme": "vsclassic-icon-theme"
+    "workbench.iconTheme": "vsclassic-icon-theme",
+    "editor.fontFamily": "Menlo, Consolas, 'Courier New', monospace",
+    "editor.fontSize": 12
 }
