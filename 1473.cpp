@@ -1,5 +1,6 @@
 // 1473.cpp
 #include <iostream>
+#include <algorithm>
 
 int main(int argc, char const * argv[]) {
     int n;
