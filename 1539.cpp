@@ -15,6 +15,9 @@ int main(int argc, char const * argv[]) {
         if (q2.empty()) {
             q2.push(2 * q1.front());
             q1.pop();
+        } else if (q1.empty()) {
+            q2.push(2 * q2.front());
+            q2.pop();
         } else {
             q2.push(2 * (q1.front() < q2.front() ? q1.front() : q2.front()));
             (q1.front() < q2.front() ? q1 : q2).pop();
