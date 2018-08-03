@@ -108,7 +108,5 @@
     "editor.cursorStyle": "underline",
     "editor.dragAndDrop": false,
     "git.enableSmartCommit": true,
-    "workbench.iconTheme": "vsclassic-icon-theme",
-    "editor.fontFamily": "Menlo, Consolas, 'Courier New', monospace",
-    "editor.fontSize": 12
+    "workbench.iconTheme": "vsclassic-icon-theme"
 }

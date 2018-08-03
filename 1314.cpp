@@ -1,32 +1,38 @@
 // 1314.cpp
 #include <iostream>
-#include <stack>
-#include <string>
 
-int main(int argc, const char * argv[]) {
-	int n;
-	std::cin >> n;
-	std::cin.get();
-	for (int i = 0; i < n; i++) {
-		std::stack<char> sc;
-		std::string ans;
-		char c;
-		while ((c = std::cin.get()) != '\n') {
-			sc.push(c);
-			if (sc.top() == '$') {
-				sc.pop();
-				sc.pop();
-			} else if (sc.top() == '#')
-				while (!sc.empty())
-					sc.pop();
-		}
-		while (!sc.empty()) {
-			ans.push_back(sc.top());
-			sc.pop();
-		}
-		for (int i = ans.size() - 1; i >= 0; i--)
-			std::cout << ans[i];
-		std::cout << std::endl;
-	}
-	return 0;
+int main(int argc, char const * argv[]) {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(NULL);
+    char c, s[10005], *top = s;
+    int n;
+    bool flag = true;
+    std::cin >> n;
+    for (int i = 0; i < n; i++) {
+        top = s;
+        while ((c = std::cin.get()) != '\n' || flag) {
+            switch (c) {
+                case '$':
+                    flag = false;
+                    if (top != s)
+                        top--;
+                    break;
+                case '#':
+                    flag = false;
+                    top = s;
+                    break;
+                case '\n':
+                    break;
+                default:
+                    flag = false;
+                    *top = c;
+                    top++;
+                    break;
+            }
+        }
+        for (char *pt = s; pt != top; pt++)
+            std::cout << *pt;
+        std::cout << '\n';
+    }
+    return 0;
 }
