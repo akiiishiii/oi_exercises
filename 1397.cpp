@@ -15,6 +15,7 @@ int main(int argc, char const * argv[]) {
                             std::cout << "NO\n";
                             return 0;
                         }
-    std::cout << "YES\n";
+    if (n >= 1)
+        std::cout << "YES\n";
     return 0;
 }
