@@ -11,7 +11,7 @@ int main(int argc, char const * argv[]) {
             for (int j = i + 1; j < n - 1; j++)
                 if (seq[i] > seq[j])
                     for (int k = j + 1; k < n; k++)
-                        if (seq[j] < seq[k]) {
+                        if (seq[j] < seq[k] && seq[k] < seq[i]) {
                             std::cout << "NO\n";
                             return 0;
                         }
