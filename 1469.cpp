@@ -1,4 +1,4 @@
-// 1548.cpp
+// 1469.cpp
 #include <iostream>
 
 int prt[505], n;
@@ -22,9 +22,9 @@ int main(int argc, char const * argv[]) {
 }
 
 void s(int root) {
-    std::cout << root << ' ';
     for (int i = 1; i <= n; i++)
         if (prt[i] == root)
             s(i);
+    std::cout << root << ' ';
     return;
 }
