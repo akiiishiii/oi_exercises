@@ -6,7 +6,7 @@ struct tp{
     long long p, q, r, b;
 } a[105];
 
-long long dfs(int x);
+long long dfs(long long x);
 inline long long gcd(long long a, long long b) { return b ? gcd(b, a % b) : a; }
 
 int main(int argc, char const *argv[]){
@@ -28,13 +28,13 @@ int main(int argc, char const *argv[]){
     return 0;
 }
 
-long long dfs(int x) {
-    int l = a[x].r, r = a[x].b;
+long long dfs(long long x) {
+    long long l = a[x].r, r = a[x].b;
     long long lmin = 1, rmin = 1;
     if (l)
         lmin = dfs(l);
     if (r)
         rmin = dfs(r);
-    int ans = lmin * a[x].p * rmin * a[x].q / gcd(lmin * a[x].p, rmin * a[x].q);
+    long long ans = lmin * a[x].p * rmin * a[x].q / gcd(lmin * a[x].p, rmin * a[x].q);
     return ans / a[x].p + ans / a[x].q;
 }
