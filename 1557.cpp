@@ -7,7 +7,7 @@ struct tp{
 } a[105];
 
 long long dfs(int x);
-inline long long gcd(long long a, long long b) { return }
+inline long long gcd(long long a, long long b) { return b ? gcd(b, a % b) : a; }
 
 int main(int argc, char const *argv[]){
     int n, root = 0;
@@ -31,10 +31,10 @@ int main(int argc, char const *argv[]){
 long long dfs(int x) {
     int l = a[x].r, r = a[x].b;
     long long lmin = 1, rmin = 1;
-    if(l)
+    if (l)
         lmin = dfs(l);
-    if(r)
+    if (r)
         rmin = dfs(r);
-    int ans = lmin * a[x].p * rmin * a[x].q / std::__gcd(lmin * a[x].p, rmin * a[x].q);
+    int ans = lmin * a[x].p * rmin * a[x].q / gcd(lmin * a[x].p, rmin * a[x].q);
     return ans / a[x].p + ans / a[x].q;
 }
