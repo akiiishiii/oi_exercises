@@ -2,21 +2,21 @@
 #include <algorithm>
 #include <iostream>
 
-struct tinp{
+struct tp{
     long long p, q, r, b;
-} a[101];
-
-int n, root;
-long long f[101];
-bool p[101];
+} a[105];
 
 long long dfs(int x);
+inline long long gcd(long long a, long long b) { return }
+
 int main(int argc, char const *argv[]){
+    int n, root = 0;
+    bool p[105];
     std::cin >> n;
     for(int i = 1; i <= n; i++){
         std::cin >> a[i].p >> a[i].q >> a[i].r >> a[i].b;
-        p[a[i].r]=true;
-        p[a[i].b]=true;
+        p[a[i].r] = true;
+        p[a[i].b] = true;
     }
     for(int i = 1; i <= n; i++){
         if(!p[i]){
@@ -24,7 +24,7 @@ int main(int argc, char const *argv[]){
             break;
         }
     }
-    std::cout << dfs(root);
+    std::cout << dfs(root) << '\n';
     return 0;
 }
 
@@ -35,6 +35,6 @@ long long dfs(int x) {
         lmin = dfs(l);
     if(r)
         rmin = dfs(r);
-    int ans = lmin * a[x].p * rmin * a[x].q / std::__gcd(lmin*a[x].p, rmin*a[x].q);
-    return ans / a[x].p + ans / a[x].q; 
+    int ans = lmin * a[x].p * rmin * a[x].q / std::__gcd(lmin * a[x].p, rmin * a[x].q);
+    return ans / a[x].p + ans / a[x].q;
 }
