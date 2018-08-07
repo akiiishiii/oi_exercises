@@ -7,9 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CD33702B21189873006D6F3C /* 1200.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CD33702A21189873006D6F3C /* 1200.cpp */; };
-		CD33702D2118A20E006D6F3C /* 1215.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CD33702C2118A20E006D6F3C /* 1215.cpp */; };
-		CD33702F2118A298006D6F3C /* 1559.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CD33702E2118A298006D6F3C /* 1559.cpp */; };
+		CD3371222119DEEE006D6F3C /* 1565.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CD3371212119DEEE006D6F3C /* 1565.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -293,6 +291,13 @@
 		CD33702A21189873006D6F3C /* 1200.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = 1200.cpp; sourceTree = "<group>"; };
 		CD33702C2118A20E006D6F3C /* 1215.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = 1215.cpp; sourceTree = "<group>"; };
 		CD33702E2118A298006D6F3C /* 1559.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = 1559.cpp; sourceTree = "<group>"; };
+		CD3370302119DE02006D6F3C /* 1420.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = 1420.cpp; sourceTree = "<group>"; };
+		CD3370312119DE02006D6F3C /* 1421.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = 1421.cpp; sourceTree = "<group>"; };
+		CD3370322119DE02006D6F3C /* 1560.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = 1560.cpp; sourceTree = "<group>"; };
+		CD3370332119DE02006D6F3C /* 1561.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = 1561.cpp; sourceTree = "<group>"; };
+		CD3370342119DE02006D6F3C /* 1562.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = 1562.cpp; sourceTree = "<group>"; };
+		CD3370352119DE02006D6F3C /* 1564.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = 1564.cpp; sourceTree = "<group>"; };
+		CD3371212119DEEE006D6F3C /* 1565.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = 1565.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -310,13 +315,6 @@
 			isa = PBXGroup;
 			children = (
 				CD336E332116E5D3006D6F3C /* 7.7 */,
-				CD336F042116E5D4006D6F3C /* AtCoder */,
-				CD336F092116E5D4006D6F3C /* Numbers */,
-				CD336F0D2116E5D4006D6F3C /* other */,
-				CD336E112116E45F006D6F3C /* Products */,
-				CD336F0F2116E5D4006D6F3C /* qt */,
-				CD336F242116E5D4006D6F3C /* temp */,
-				CD336F262116E5D4006D6F3C /* Windows */,
 				CD336E392116E5D3006D6F3C /* 1000.cpp */,
 				CD336E3A2116E5D3006D6F3C /* 1001.cpp */,
 				CD336E3B2116E5D3006D6F3C /* 1002.cpp */,
@@ -433,8 +431,6 @@
 				CD336EA92116E5D3006D6F3C /* 1184.cpp */,
 				CD336EAA2116E5D3006D6F3C /* 1189.cpp */,
 				CD33702A21189873006D6F3C /* 1200.cpp */,
-				CD33702C2118A20E006D6F3C /* 1215.cpp */,
-				CD33702E2118A298006D6F3C /* 1559.cpp */,
 				CD336EAB2116E5D3006D6F3C /* 1202.cpp */,
 				CD336EAC2116E5D3006D6F3C /* 1203.cpp */,
 				CD336EAD2116E5D3006D6F3C /* 1209.cpp */,
@@ -442,6 +438,7 @@
 				CD336EAF2116E5D3006D6F3C /* 1210.cpp */,
 				CD336EB02116E5D3006D6F3C /* 1211.cpp */,
 				CD336EB12116E5D3006D6F3C /* 1214.cpp */,
+				CD33702C2118A20E006D6F3C /* 1215.cpp */,
 				CD336EB22116E5D3006D6F3C /* 1221.cpp */,
 				CD336EB32116E5D3006D6F3C /* 1224.cpp */,
 				CD336EB42116E5D3006D6F3C /* 1226.cpp */,
@@ -519,6 +516,8 @@
 				CD3370242118902D006D6F3C /* 1401.cpp */,
 				CD3370252118902E006D6F3C /* 1406.cpp */,
 				CD336E2C2116E5D3006D6F3C /* 1409.cpp */,
+				CD3370302119DE02006D6F3C /* 1420.cpp */,
+				CD3370312119DE02006D6F3C /* 1421.cpp */,
 				CD336EF52116E5D4006D6F3C /* 1457.cpp */,
 				CD336EF62116E5D4006D6F3C /* 1468.cpp */,
 				CD336E1E2116E5D3006D6F3C /* 1469.cpp */,
@@ -546,13 +545,26 @@
 				CD33702221175111006D6F3C /* 1554.cpp */,
 				CD336E212116E5D3006D6F3C /* 1555.cpp */,
 				CD3370262118902E006D6F3C /* 1557.cpp */,
+				CD33702E2118A298006D6F3C /* 1559.cpp */,
+				CD3370322119DE02006D6F3C /* 1560.cpp */,
+				CD3370332119DE02006D6F3C /* 1561.cpp */,
+				CD3370342119DE02006D6F3C /* 1562.cpp */,
+				CD3370352119DE02006D6F3C /* 1564.cpp */,
+				CD3371212119DEEE006D6F3C /* 1565.cpp */,
 				CD336F012116E5D4006D6F3C /* 1605.cpp */,
 				CD336F022116E5D4006D6F3C /* 1649.cpp */,
 				CD336F032116E5D4006D6F3C /* 1703.cpp */,
+				CD336F042116E5D4006D6F3C /* AtCoder */,
 				CD336E1C2116E5D3006D6F3C /* main.cpp */,
-				CD336E222116E5D3006D6F3C /* tempCodeRunnerFile.cpp */,
+				CD336F092116E5D4006D6F3C /* Numbers */,
+				CD336F0D2116E5D4006D6F3C /* other */,
+				CD336E112116E45F006D6F3C /* Products */,
+				CD336F0F2116E5D4006D6F3C /* qt */,
 				CD336F232116E5D4006D6F3C /* README.md */,
 				CD336E232116E5D3006D6F3C /* tasklist.txt */,
+				CD336F242116E5D4006D6F3C /* temp */,
+				CD336E222116E5D3006D6F3C /* tempCodeRunnerFile.cpp */,
+				CD336F262116E5D4006D6F3C /* Windows */,
 			);
 			sourceTree = "<group>";
 		};
@@ -725,9 +737,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CD33702F2118A298006D6F3C /* 1559.cpp in Sources */,
-				CD33702D2118A20E006D6F3C /* 1215.cpp in Sources */,
-				CD33702B21189873006D6F3C /* 1200.cpp in Sources */,
+				CD3371222119DEEE006D6F3C /* 1565.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
