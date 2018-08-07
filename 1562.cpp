@@ -11,7 +11,6 @@ int main(int argc, char const *argv[]) {
     return 0;
 }
 
-
 int nthUglyNumber(int n) {
     int p2 = 0;
     int p3 = 0;
@@ -46,7 +45,6 @@ int nthUglyNumber(int n) {
                 continue;
             ugly.push_back(ugly7);
         }
-        //std::cout << ugly[count - 1] << '\n';
         ++count;
     }
     return ugly[n-1];
