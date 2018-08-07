@@ -4,7 +4,7 @@
 
 std::string st;
 
-std::string iszm(int left,int right) {
+std::string iszm(int left, int right) {
     std::string data;
     for(int i = left; i <= right; i++) {
         if (st[i] >= 'a' && st[i] <= 'z')
@@ -61,14 +61,14 @@ std::string tree(int left, int right, char &low) {
         s1 = '(' + s1 + ')';
     if ((low == '*' || low == '-') && (lowr == '+' || lowr == '-'))
         s2 = '(' + s2 + ')';
-    if ((low == '/') && (lowr != '\0'))
+    if ((low == '/') && (lowr != ' '))
         s2 = '(' + s2+ ')';
     return s1 + low + s2;
 }
 
 int main(int argc, char const *argv[]) {
     std::cin >> st;
-    char low = '\0';
+    char low = ' ';
     int t = 0;
     for (int i = st.length() - 1; i >= 0; i--)
         if (st[i] < 'a' || st[i] > 'z') {
