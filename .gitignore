@@ -4,3 +4,6 @@
 # test input/output files
 *.in
 *.out
+
+# tempCodeRunnerFiles
+tempCodeRunnerFile.cpp
