@@ -7,7 +7,7 @@
 std::ifstream in("overtaking.in");
 std::ofstream out("overtaking.out");
 
-typedef std::pair<int, int> car;
+typedef std::pair<long long, long long> car;
 
 class compare : std::binary_function<car, car, bool> {
 public:
