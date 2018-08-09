@@ -43,7 +43,7 @@ void dfs(int x, int y) {
     cnt++;
     for (int i = 0; i < 4; i++) {
         int nx = x + dx[i], ny = y + dy[i];
-        if (!vi[nx][ny] && (mat[nx][ny] == '.' || mat[nx][ny] == '*') && nx <= n && nx >= 1 && ny >= 1 && ny <= m) {
+        if (!vi[nx][ny] && (mat[nx][ny] == '.' || mat[nx][ny] == '*') && nx <= m && nx >= 1 && ny >= 1 && ny <= n) {
             dfs(nx, ny);
         }
     }
