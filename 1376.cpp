@@ -28,9 +28,10 @@ int main(int argc, char const *argv[]) {
     for (int i = 0; i < n; i++)
         for (int j = 0; j < m; j++) {
             std::cin >> mat[i][j];
-            if (mat[i][j] == 'a')
+            if (mat[i][j] == 'a') {
                 q.push(point(i, j, 0));
                 mat[i][j] = '#';
+            }
         }
     bfs();
     return 0;
@@ -40,7 +41,7 @@ void bfs() {
     while (!q.empty()) {
         for (int i = 0; i < 4; i++) {
             int nx = q.top().x + dx[i], ny = q.top().y + dy[i], ns = q.top().step + 1;
-            if ((nx < 0 && nx >= n) || (ny < 0 && ny >= m) || mat[nx][ny] == '#')
+            if ((nx < 0 || nx >= n) || (ny < 0 || ny >= m) || mat[nx][ny] == '#')
                 continue;
             else if (mat[nx][ny] == 'r') {
                 std::cout << ns << '\n';
