@@ -42,25 +42,24 @@ void bfs() {
     q.push(chess(cstart, 0));
     while (!q.empty()) {
         chess now = q.front();
-        int temp = now.hash;
-        if (temp == cend) {
+        if (now.hash == cend) {
             std::cout << now.depth << '\n';
             return;
         }
         for (int i = 15; i >= 0; i--) {
-            int x = (15 - i) / 4, y = (15 - i) % 4, w = 1 << i, z;
-            if (y < 3 && (temp & (1 << i)) != (temp & (1 << (i - 1)))) {
-                z = 1 << (i - 1);
-                if(!vis[temp ^ z ^ w]) {
-                    vis[temp ^ z ^ w] = true;
-                    q.push(chess(temp ^ z ^ w, now.depth + 1));
+            int col = (15 - i) / 4, row = (15 - i) % 4, pow2i = 1 << i;
+            if (row < 3 && (now.hash & (1 << i)) != (now.hash & (1 << (i - 1)))) {
+                int temp = 1 << (i - 1), res = now.hash ^ temp ^ pow2i;
+                if(!vis[res] && (res >> (i & 1)) != res >> ((i - 1) & 1)) {
+                    vis[res] = true;
+                    q.push(chess(res, now.depth + 1));
                 }
             }
-                if (x < 3 && (temp & (1 << i)) != (temp & (1 << (i - 4)))) {
-                z = 1 << (i - 4);
-                if(!vis[temp ^ z ^ w]) {
-                    vis[temp ^ z ^ w] = true;
-                    q.push(chess(temp ^ z ^ w, now.depth + 1));
+            if (col < 3 && (now.hash & (1 << i)) != (now.hash & (1 << (i - 4)))) {
+                int temp = 1 << (i - 4), res = now.hash ^ temp ^ pow2i;
+                if(!vis[res] && ((res >> i) & 1) != ((res >> (i - 4)) & 1)) {
+                    vis[res] = true;
+                    q.push(chess(res, now.depth + 1));
                 }
             }
         }
