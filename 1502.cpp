@@ -4,12 +4,11 @@
 #include <algorithm>
 #include <utility>
 #include <vector>
+#include <cmath>
 
 struct compSmaller : public std::binary_function<std::pair<int, int>, std::pair<int, int>, bool> {
     bool operator()(std::pair<int, int> const &a, std::pair<int, int> const &b) { return a.first == b.first ? a.second < b.second : a.first < b.first; }
 };
-
-double const bypass = 141.4;
 
 int main(int argc, char const *argv[]) {
     int n, m, k, f[10100] = {0}, maxn = 0;
@@ -23,10 +22,10 @@ int main(int argc, char const *argv[]) {
     std::sort(arr.begin(), arr.end(), compSmaller());
     for (int i = 1; i < arr.size(); i++)
         for (int j = 0; j < i; j++)
-            if (arr[j].second < arr[i].second && arr[j].first < arr[i].first && f[j] < f[i] + 1)
+            if (arr[j].second < arr[i].second && arr[j].first < arr[i].first)
                 f[i] = f[j] + 1;
     for (int i = 1; i <= n; i++)
         maxn = f[i] > maxn ? f[i] : maxn;
-    std::cout << (n + m - maxn * 2) * 100LL + (long long)(maxn * bypass + 0.5);
+    std::cout << (n + m - maxn * 2) * 100LL + (long long)(maxn * sqrt(2) * 100 + 0.5);
     return 0;
 }

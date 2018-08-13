@@ -5,7 +5,7 @@ template <typename T>
 inline T max(const T a, const T b) { return a > b ? a : b;}
 
 int main(int argc, const char * argv[]) {
-    int n, arr[105] = {0}, f[105], g[105], maxp = 0;
+    int n, arr[1010] = {0}, f[1010], g[1010], maxp = 0;
     std::cin >> n;
     f[0] = g[n + 1] = 0;
     for (int i = 1; i <= n; i++)
@@ -26,6 +26,6 @@ int main(int argc, const char * argv[]) {
     }
     for (int i = 1; i <= n; i++)
         maxp = f[i] + g[i] > maxp ? f[i] + g[i] : maxp;
-    std::cout << n - maxp + 1 << std::endl;
+    std::cout << maxp - 1 << std::endl;
     return 0;
 }
