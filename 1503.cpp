@@ -11,6 +11,8 @@ int main(int argc, char const *argv[]) {
             copy[++len] = arr[i];
         else if (i > k && arr[i] > arr[k])
             copy[++len] = arr[i];
+        else if (i == k)
+            copy[++len] = arr[i];
     }
     d[1] = copy[1];
     for (int i = 2; i <= n; i++) {
