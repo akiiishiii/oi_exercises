@@ -1,9 +1,9 @@
-*
+# exe files
+*.exe
 
-# folders
-!oi_exercises.xcodeproj/
-!qt/
-!*.cpp
+# test input/output files
+*.in
+*.out
 
 # tempCodeRunnerFiles
 tempCodeRunnerFile.cpp
