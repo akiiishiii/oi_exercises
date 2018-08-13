@@ -1,24 +1,30 @@
 // 1504.cpp
 #include <iostream>
 
-template <typename T>
-inline T max(const T a, const T b) { return a > b ? a : b;}
+int arr[200005] = {0}, d[200005] = {0};
 
-int main(int argc, const char * argv[]) {
-    int n, arr[1005] = {-1}, f[1005], maxi = 0;
-    f[0] = 0;
+int main(int argc, char const *argv[]) {
+    int n, len = 1;
     std::cin >> n;
     for (int i = 1; i <= n; i++)
         std::cin >> arr[i];
-    for (int i = 1; i <= n; i++) {
-        int maxj = 0;
-        for (int j = 1; j < i; j++)
-            if (arr[j] < arr[i])
-                maxj = f[j] > maxj ? f[j] : maxj;
-        f[i] = maxj + 1;
+    d[1] = arr[1];
+    for (int i = 2; i <= n; i++) {
+        int l = 1, r = len;
+        if (d[len] < arr[i]) {
+            len++;
+            d[len] = arr[i];
+            continue;
+        }
+        while (l <= r) {
+            int mid = (l + r) / 2;
+            if (d[mid] < arr[i])
+                l = mid + 1;
+            else
+                r = mid - 1;
+        }
+        d[l] = arr[i];
     }
-    for (int i = 1; i <= n; i++)
-        maxi = f[i] > maxi ? f[i] : maxi;
-    std::cout << maxi << std::endl;
+    std::cout << n - len << '\n';
     return 0;
 }

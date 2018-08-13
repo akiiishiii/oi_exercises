@@ -1,8 +1,10 @@
 // 1503.cpp
 #include <iostream>
 
+int arr[200005] = {0}, copy[200005] = {0}, d[200005] = {0};
+
 int main(int argc, char const *argv[]) {
-    int n, k, arr[200005] = {0}, len = 0, lenn = 1, copy[200005] = {0}, d[200005] = {0};
+    int n, k, len = 0, lenn = 1;
     std::cin >> n >> k;
     for (int i = 1; i <= n; i++)
         std::cin >> arr[i];
@@ -15,7 +17,7 @@ int main(int argc, char const *argv[]) {
             copy[++len] = arr[i];
     }
     d[1] = copy[1];
-    for (int i = 2; i <= n; i++) {
+    for (int i = 2; i <= len; i++) {
         int l = 1, r = lenn;
         if (d[lenn] < copy[i]) {
             lenn++;
