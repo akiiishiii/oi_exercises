@@ -6,9 +6,9 @@
 int main(int argc, char const *argv[]) {
     int f[201], v[11][31], w[11][31], c[11] = {0}, m, n, tot;
     memset(f, 0xCF, sizeof(f));
-    f[0] = 0;
     memset(v, 0, sizeof(v));
     memset(w, 0, sizeof(w));
+    f[0] = 0;
     std::cin >> m >> tot >> n;
     for (int i = 1; i <= tot; i++) {
         int vi, wi, ci;
