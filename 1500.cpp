@@ -16,7 +16,7 @@ int main(int argc, char const *argv[]) {
     for (int i = 1; i <= n; i++)
         for (int j = 1; j <= n - i + 1; j++) {
             f[i][j] = std::min(f[i - 1][j - 1], std::min(f[i - 1][j], f[i - 1][j + 1])) + 1;
-            g[i][j] = std::min(d[i + 1][j - 1], std::min(g[i + 1][j], g[i + 1][j + 1])) + 1;
+            g[i][j] = std::min(g[i + 1][j - 1], std::min(g[i + 1][j], g[i + 1][j + 1])) + 1;
             maxx = std::max(maxx, std::max(f[i][j], g[i][j]));
         }
     std::cout << maxx * maxx << '\n';

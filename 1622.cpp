@@ -7,9 +7,9 @@
 struct edge {
     int to;
     int next;
-} w[200001 << 1];
+} w[50001 << 1];
 
-int d[200001] = {0}, prt[200001] = {0}, h[200001] = {0}, p[200001][18], m, n, root = 1, cnt = 0;
+int d[50001] = {0}, prt[50001] = {0}, h[50001] = {0}, p[50001][16], m, n, root = 1, cnt = 0;
 
 void add_edge(int mx, int my);
 void dfs(int mx, int depth);
@@ -20,7 +20,7 @@ int main(int argc, char const *argv[]) {
     std::cin >> n;
     for (int i = 1, k, y; i <= n; i++) {
         std::cin >> k;
-        for (int i = 1; i <= k; i++) {
+        for (int j = 1; j <= k; j++) {
             std::cin >> y;
             add_edge(i, y);
             prt[y] = i;
