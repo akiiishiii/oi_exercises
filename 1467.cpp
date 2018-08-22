@@ -21,15 +21,15 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 //  DEALINGS IN THE SOFTWARE.
 
-// 1468.cpp
+// 1467.cpp
+#include <map>
+#include <string>
 #include <iostream>
-#include <vector>
 
-int main(int argc, char const * argv[]) {
-    int n;
-    std::cin >> n;
-    for (int i = 1; i <= n; i++) {
+int main(int argc, char const *argv[]) {
+    int a, k;
+    std::cin >> a >> k;
+    std::string s;
 
-    }
     return 0;
 }
