@@ -1,14 +1,15 @@
 // 1425.cpp
 #include <queue>
 #include <vector>
+#include <cstring>
 #include <iostream>
 #include <algorithm>
 
-int n, m;
+int n, m, d[100001] = {0}, num[100001] = {0};
 bool vis[100001] = {false};
 std::vector<int> v[100001];
 
-void bfs(int mx);
+void bfs();
 
 int main(int argc, char const *argv[]) {
     std::ios_base::sync_with_stdio(false);
@@ -23,19 +24,28 @@ int main(int argc, char const *argv[]) {
     }
     for (int i = 1; i <= n; i++)
         std::sort(v[i].begin(), v[i].end());
+    bfs();
+    for (int i = 1; i <= n; i++)
+        std::cout << num[i] << '\n';
     return 0;
 }
 
-void bfs(int mx) {
+void bfs() {
+    memset(d, 0x3f, sizeof d);
+    d[1] = 0;
+    num[1] = 1;
     std::queue<int> q;
-    q.push(mx);
-    vis[mx] = true;
+    q.push(1);
+    vis[1] = true;
     while(!q.empty()) {
         for (auto &&it : v[q.front()]) {
             if (!vis[it]) {
-                q.push(it);
                 vis[it] = true;
-            }
+                d[it] = d[q.front()] + 1;
+                num[it] = num[q.front()];
+                q.push(it);
+            } else if (d[q.front()] + 1 == d[it])
+                num[it] = (num[it] + num[q.front()]) % 100003;
         }
         q.pop();
     }

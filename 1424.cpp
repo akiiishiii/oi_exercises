@@ -55,6 +55,7 @@ int main(int argc, char const *argv[]) {
 }
 
 bool bfs(int mx) {
+    bool res = false;
     std::queue<int> q;
     q.push(mx);
     vis[mx] = true;
@@ -62,14 +63,14 @@ bool bfs(int mx) {
         for (auto &&it : v[q.front()]) {
             if (!vis[it]) {
                 if (it == 9)
-                    return true;
+                    res = true;
                 q.push(it);
                 vis[it] = true;
             }
         }
         q.pop();
     }
-    return false;
+    return res;
 }
 
 void bfsv(int mx) {
