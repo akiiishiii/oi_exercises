@@ -66,7 +66,7 @@ void add_edge(int mx, int my, int mv) {
 
 void dfs(int mx, int depth, int mv) {
     d[mx] = depth;
-    vs[mx] += mv;
+    vs[mx] += mv + w[mx].v;
     for (int i = h[mx]; i; i = w[i].next) {
         dfs(w[i].to, depth + 1, vs[i]);
     }
