@@ -29,7 +29,8 @@ int main(int argc, char const * argv[]) {
     int n;
     std::cin >> n;
     for (int i = 1; i <= n; i++) {
-
+        for (;;);
+        return 0;
     }
     return 0;
 }
