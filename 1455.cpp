@@ -1,4 +1,4 @@
-// 1457.cpp
+// 1455.cpp
 #include <vector>
 #include <cstring>
 #include <iostream>
@@ -40,7 +40,6 @@ int main(int argc, char const *argv[]) {
             }
         }
     }
-    std::cout << "Impossible\n";
     return 0;
 }
 
