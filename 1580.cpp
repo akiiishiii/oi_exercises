@@ -6,7 +6,7 @@
 
 const int N = 100010, M = 500010;
 
-int head[N], ver[M], edge[M], Next[M], d[N];
+int head[N << 1], ver[M << 1], edge[M << 1], Next[M << 1], d[N];
 int n, m, tot;
 std::queue<int> q;
 bool v[N];
