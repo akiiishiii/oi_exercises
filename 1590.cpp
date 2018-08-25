@@ -1,4 +1,4 @@
-// 1625.cpp
+// 1590.cpp
 #include <iostream>
 #include <cstring>
 #include <algorithm>
@@ -19,10 +19,8 @@ void dijkstra(int mx);
 int main(int argc, char const *argv[]) {
     std::ios_base::sync_with_stdio(false);
     std::cin.tie(NULL);
-    int s, t;
     read(n);
-    read(m);
-    for (int i = 1; i <= m; i++) {
+    for (int i = 1; i < n; i++) {
         int x, y, z;
         read(x);
         read(y);
@@ -30,44 +28,14 @@ int main(int argc, char const *argv[]) {
         add(x, y, z);
         add(y, x, z);
     }
-    read(s);
-    read(t);
-    dijkstra(s);
-    write(g[t]);
-    std::cout.put('\n');
+
     return 0;
-}
-
-void read(int &x) {
-    x = 0;
-    char c = std::cin.get();
-    while (c < '0' || c > '9')
-        c = std::cin.get();
-    while (c >= '0' && c <= '9') {
-        x = x * 10 + c - '0';
-        c = std::cin.get();
-    }
-}
-
-void write(int x) {
-    int y = 10, len = 1;
-    while (y <= x) {
-        y *= 10;
-        len++;
-    }
-    while (len--) {
-        y /= 10;
-        std::cout.put(x / y + 48);
-        x %= y;
-    }
 }
 
 void dijkstra(int mx) {
     memset(d, 0x3f, sizeof(d));
     memset(v, false, sizeof(v));
-    memset(g, 0, sizeof(g));
     d[mx] = 0;
-    g[mx] = 1;
     q.push(std::make_pair(d[mx], mx));
     while (q.size()) {
         int x = q.top().second; q.pop();
@@ -75,10 +43,7 @@ void dijkstra(int mx) {
         v[x] = true;
         for (int i = head[x]; i; i = Next[i]) {
             int y = ver[i], z = edge[i];
-            if (d[y] == d[x] + z)
-                g[y] += g[x];
             if (d[y] > d[x] + z) {
-                g[y] = g[x];
                 d[y] = d[x] + z;
                 q.push(std::make_pair(-d[y], y));
             }

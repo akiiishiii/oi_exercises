@@ -14,7 +14,6 @@ int main(int argc, char const *argv[]) {
     read(n);
     read(m);
     memset(d, 0x3f, sizeof(d));
-    for (int i = 1; i <= n; i++) d[i][i] = 0;
     for (int i = 1; i <= m; i++) {
         int x, y, z;
         read(x);
@@ -25,20 +24,17 @@ int main(int argc, char const *argv[]) {
     memcpy(dd, d, sizeof(d));
     for (int k = 1; k <= n; k++) {
         for (int i = 1; i <= k - 1; i++)
-            for (int j = 1; j <= k - 1; j++)
-                if (dd[i][j] != 0x3f3f3f3f && d[i][k] != 0x3f3f3f3f && d[k][j] != 0x3f3f3f3f)
-                    ans = std::min(ans, dd[i][j] + d[i][k] + d[k][j]);
+            for (int j = i + 1; j <= k - 1; j++)
+                ans = std::min(ans, d[i][j] + dd[i][k] + dd[k][j]);
         for (int i = 1; i <= n; i++)
             for (int j = 1; j <= n; j++)
-            if (dd[i][k] != 0x3f3f3f3f && dd[k][j] != 0x3f3f3f3f)
-                dd[i][j] = std::min(dd[i][j], dd[i][k] + dd[k][j]);
+                d[i][j] = std::min(d[i][j], d[i][k] + d[k][j]);
     }
-    if (ans == 0x3f3f3f3f)
-        std::cout << "No solution.\n";
-    else {
+    if (ans != 0x3f3f3f3f)
         write(ans);
-        std::cout.put('\n');
-    }
+    else
+        std::cout << "No solution.";
+    std::cout.put('\n');
     return 0;
 }
 

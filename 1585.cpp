@@ -1,13 +1,21 @@
 // 1585.cpp
+// SPFA算法
 #include <iostream>
+#include <cstdio>
 #include <cstring>
 #include <algorithm>
+#include <queue>
 
-int d[1010][1010];
-int n, m;
+const int N = 1010, M = 10010;
+int head[N], ver[M], edge[M], Next[M], d[N][N];
+int n, m, tot;
+std::queue<int> q;
+bool v[N];
 
+void add(int x, int y, int z) { ver[++tot] = y, edge[tot] = z, Next[tot] = head[x], head[x] = tot; }
 void read(int &x);
 void write(int x);
+void spfa(int mx);
 
 int main(int argc, char const *argv[]) {
     int minn = 0x3f3f3f3f;
@@ -21,14 +29,14 @@ int main(int argc, char const *argv[]) {
         read(x);
         read(y);
         read(z);
-        d[x][y] = std::min(d[x][y], z);
+        add(x, y, z);
     }
-    for (int k = 1; k <= n; k++)
-        for (int i = 1; i <= n; i++)
-            for (int j = 1; j <= n; j++)
-                d[i][j] = std::min(d[i][j], d[i][k] + d[k][j]);
     for (int i = 1; i <= n; i++)
-        minn = std::min(minn, d[i][i]);
+        spfa(i);
+    for (int i = 1; i <= n; i++)
+        for (int j = 1; j <= n; j++)
+            if (i != j)
+                minn = std::min(minn, d[i][j] + d[j][i]);
     write(minn);
     std::cout.put('\n');
     return 0;
@@ -55,5 +63,31 @@ void write(int x) {
         y /= 10;
         std::cout.put(x / y + 48);
         x %= y;
+    }
+}
+
+void spfa(int mx) {
+    memset(v, 0, sizeof(v));
+    int g, j;
+    for (int t = 1; t <= n; ++t)
+        d[mx][t] = 0x3f3f3f3f;
+    d[mx][mx] = 0;
+    while (q.size())
+        q.pop();
+    q.push(mx);
+    v[mx] = true;
+    while (!q.empty()) {
+        g = q.front();
+        q.pop();
+        v[g] = false;
+        for (j = head[g]; j; j = Next[j]) {
+            if (d[mx][ver[j]] > edge[j] + d[mx][g]) {
+                d[mx][ver[j]] = edge[j] + d[mx][g];
+                if (!v[ver[j]]) {
+                    v[ver[j]] = 1;
+                    q.push(ver[j]);
+                }
+            }
+        }
     }
 }

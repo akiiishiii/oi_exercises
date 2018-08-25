@@ -1,12 +1,12 @@
-// 1625.cpp
+// 1586.cpp
 #include <iostream>
 #include <cstring>
 #include <algorithm>
 #include <queue>
 #include <utility>
 
-const int N = 101, M = 4501;
-int head[N << 1], ver[M << 1], edge[M << 1], Next[M << 1], d[N], g[N];
+const int N = 1010, M = 499510;
+int head[N << 1], ver[M << 1], edge[M << 1], Next[M << 1], d[N], da[N], g[N];
 bool v[N];
 int n, m, tot;
 std::priority_queue< std::pair<int, int> > q;
@@ -17,11 +17,12 @@ void write(int x);
 void dijkstra(int mx);
 
 int main(int argc, char const *argv[]) {
-    std::ios_base::sync_with_stdio(false);
-    std::cin.tie(NULL);
-    int s, t;
+    int a, b, c;
     read(n);
     read(m);
+    read(a);
+    read(b);
+    read(c);
     for (int i = 1; i <= m; i++) {
         int x, y, z;
         read(x);
@@ -30,10 +31,13 @@ int main(int argc, char const *argv[]) {
         add(x, y, z);
         add(y, x, z);
     }
-    read(s);
-    read(t);
-    dijkstra(s);
-    write(g[t]);
+    dijkstra(a);
+    int dab = d[b], dac = d[c], gac = g[c];
+    dijkstra(c);
+    if (dab == dac + d[b])
+        write(gac * g[b]);
+    else
+        write(0);
     std::cout.put('\n');
     return 0;
 }
