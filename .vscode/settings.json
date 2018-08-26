@@ -113,7 +113,6 @@
     "workbench.iconTheme": "vsclassic-icon-theme",
     "files.autoSave": "onFocusChange",
     "editor.cursorBlinking": "phase",
-    "files.eol": "\n",
     "files.trimFinalNewlines": true,
     "workbench.sideBar.location": "right"
 }
