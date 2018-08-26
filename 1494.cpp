@@ -6,23 +6,25 @@
 struct digit {
     digit() = default;
     ~digit() = default;
-    digit(short const mnum[3][3], int md) : depth(md) { memcpy(num, mnum, sizeof(num)); }
-    short num[3][3];
+    digit(int const mnum[3][3], int md) : depth(md) { memcpy(num, mnum, sizeof(num)); }
+    int num[3][3];
     int depth;
-    static int cantorexp(short const num[3][3]);
+    static int cantorexp(int const num[3][3]);
     int cantor() { return cantorexp(num); }
 };
 
 int const Fact[] = {1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800};
-short const goal[3][3] = {{0, 1, 2}, {3, 4, 5}, {6, 7, 8}};
-short start[3][3];
+int const goal[3][3] = {{0, 1, 2}, {3, 4, 5}, {6, 7, 8}};
+int start[3][3];
 int dist[2][365000], ans;
 bool vis[2][365000];
 std::queue<digit> q[2];
 
-int check(short const num[3][3]);
+int check(int const num[3][3]);
 void bfs();
 bool expand(int k);
+void read(int &x);
+void write(int x);
 
 int main(int argc, char const *argv[]) {
     std::ios_base::sync_with_stdio(false);
@@ -31,19 +33,21 @@ int main(int argc, char const *argv[]) {
     memset(vis, false, sizeof(vis));
     for (int i = 0; i < 3; i++)
         for (int j = 0; j < 3; j++)
-            std::cin >> start[i][j];
+            read(start[i][j]);
     if (digit::cantorexp(goal) == digit::cantorexp(start))
-        std::cout << "0\n";
-    else if ((check(goal) % 2) ^ (check(start) % 2))
-        std::cout << "-1\n";
-    else {
+        std::cout.put('0');
+    else if ((check(goal) % 2) ^ (check(start) % 2)) {
+        std::cout.put('-');
+        std::cout.put('1');
+    } else {
         bfs();
-        std::cout << ans << '\n';
+        write(ans);
     }
+    std::cout.put('\n');
     return 0;
 }
 
-int digit::cantorexp(short const num[3][3]) {
+int digit::cantorexp(int const num[3][3]) {
     int ans = 0;
     for (int i = 0; i < 9; i++) {
         int temp = 0;
@@ -55,7 +59,7 @@ int digit::cantorexp(short const num[3][3]) {
     return ans;
 }
 
-int check(short const num[3][3]) {
+int check(int const num[3][3]) {
     int ans = 0;
     for (int i = 0; i < 9; i++)
         if (num[i / 3][i % 3])
@@ -127,4 +131,28 @@ bool expand(int k) {
         }
     }
     return false;
+}
+
+void read(int &x) {
+    x = 0;
+    char c = std::cin.get();
+    while (c < '0' || c > '9')
+        c = std::cin.get();
+    while (c >= '0' && c <= '9') {
+        x = x * 10 + c - '0';
+        c = std::cin.get();
+    }
+}
+
+void write(int x) {
+    int y = 10, len = 1;
+    while (y <= x) {
+        y *= 10;
+        len++;
+    }
+    while (len--) {
+        y /= 10;
+        std::cout.put(x / y + 48);
+        x %= y;
+    }
 }
