@@ -114,5 +114,6 @@
     "files.autoSave": "onFocusChange",
     "editor.cursorBlinking": "phase",
     "files.trimFinalNewlines": true,
-    "workbench.sideBar.location": "right"
+    "workbench.sideBar.location": "right",
+    "clang.executable": "clang"
 }
