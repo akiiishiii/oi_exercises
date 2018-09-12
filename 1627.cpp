@@ -1,11 +1,13 @@
 // 1627.cpp
+#include <queue>
+#include <utility>
 #include <cstring>
 #include <iostream>
 #include <algorithm>
 
 int mat[151][151], prt[151] = {0}, dfn[151] = {0}, low[151] = {0};
-int n, m, num = 0, ans = 0, root = 0, son = 0;
-bool mk[151] = {false};
+int n, m, num = 0;
+std::priority_queue<std::pair<int, int> > q;
 
 void read(int &x);
 void write(int x);
@@ -21,12 +23,17 @@ int main(int argc, char const *argv[]) {
         mat[a][b] = mat[b][a] = 1;
     }
     dfs(1);
-    if (son == 1) {
-        ans--;
-        mk[root] = false;
+    while (q.size()) {
+        std::pair<int, int> p = q.top();
+        q.pop();
+        if (q.size() >= 1)
+            if (p == q.top())
+                q.pop();
+        write(-p.first);
+        std::cout.put(' ');
+        write(-p.second);
+        std::cout.put('\n');
     }
-    write(ans);
-    std::cout.put('\n');
     return 0;
 }
 
@@ -64,14 +71,10 @@ void dfs(int u) {
                 dfs(v);
                 low[u] = std::min(low[u], low[v]);
                 if (low[v] > dfn[u]) {
-                    if (!mk[u]) {
-                        ans++;
-                        mk[u] = true;
-                    }
-                    if (dfn[u] == 1) {
-                        root = u;
-                        son++;
-                    }
+                    if (u < v)
+                        q.push(std::make_pair(-u, -v));
+                    else
+                        q.push(std::make_pair(-v, -u));
                 }
             } else
                 low[u] = std::min(low[u], dfn[v]);
