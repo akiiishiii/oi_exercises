@@ -1,40 +1,40 @@
-// 1629.cpp
+// 1630.cpp
+#include <stack>
 #include <cstring>
 #include <iostream>
 #include <algorithm>
 
 const int Maxn = 100001, Maxm = 1000001;
-int head[Maxn << 1], ver[Maxm << 1], Next[Maxm << 1], prt[Maxn] = {0}, dfn[Maxn] = {0}, low[Maxn] = {0}, cona[Maxn] = {0}, conb[Maxn] = {0};
-int n, m, k, l, tot = 0, cnt = 0, ans = 0;
+int head[Maxn << 1], ver[Maxm << 1], Next[Maxm << 1], prt[Maxn] = {0}, dfn[Maxn] = {0}, low[Maxn] = {0}, con[Maxn] = {0}, belong[Maxn] = {0};
+int n, m, k, l, tot = 0, cnt = 0, ans = 0, bcc = 0;
+std::stack<int> s;
 
 void add(int x, int y) { ver[++tot] = y, Next[tot] = head[x], head[x] = tot; }
 void read(int &x);
 void write(int x);
-void dfs(int x);
+void Tarjan(int x);
 
 int main(int argc, char const *argv[]) {
-    std::ios_base::sync_with_stdio(false);
-    std::cin.tie(NULL);
     read(n);
     read(m);
-    read(k);
-    read(l);
-    for (int i = 1, x; i <= k; i++) {
-        read(x);
-        cona[x] = true;
-    }
-    for (int i = 1, x; i <= l; i++) {
-        read(x);
-        conb[x] = true;
-    }
     for (int i = 1, x, y; i <= m; i++) {
         read(x);
         read(y);
         add(x, y);
         add(y, x);
     }
-    dfs(1);
-    write(ans);
+    Tarjan(1);
+    for (int i = 1; i <= Maxn; i++)
+        for (int k = head[i]; k; k = Next[k])
+        {
+            int j = ver[k];
+            if (belong[i] != belong[j])
+                con[belong[i]]++;
+        }
+    for (int i = 1; i <= bcc; i++)
+        if (con[i] == 1)
+            ans++;
+    write((ans + 1) / 2);
     std::cout.put('\n');
     return 0;
 }
@@ -63,21 +63,26 @@ void write(int x) {
     }
 }
 
-void dfs(int x) {
+void Tarjan(int x) {
+    int y;
     low[x] = dfn[x] = ++cnt;
+    s.push(x);
     for (int i = head[x]; i; i = Next[i]) {
-        int y = ver[i];
+        y = ver[i];
         if (prt[x] != y) {
             if (!dfn[y]) {
                 prt[y] = x;
-                dfs(y);
+                Tarjan(y);
                 low[x] = std::min(low[x], low[y]);
-                cona[x] += cona[y];
-                conb[x] += conb[y];
-                if (low[y] > dfn[x] && (!cona[y] || !conb[y] || cona[y] == k || conb[y] == l))
-                    ans++;
             } else
                 low[x] = std::min(low[x], dfn[y]);
         }
+    } if (low[x] == dfn[x]) {
+        bcc++;
+        do {
+            y = s.top();
+            s.pop();
+            belong[y] = bcc;
+        } while (y != x);
     }
 }
