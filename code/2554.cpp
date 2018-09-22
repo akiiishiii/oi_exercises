@@ -8,7 +8,7 @@
 
 int const Maxnm = 16, Maxp = 11;
 int n, m, p, tot;
-int mat[Maxnm * Maxnm][Maxnm * Maxnm], num[Maxnm][Maxnm], head[230401], ver[6000000], edge[6000000], Next[6000000], d[230401];
+int mat[Maxnm * Maxnm][Maxnm * Maxnm], num[Maxnm][Maxnm], head[230401], ver[600000], edge[600000], Next[600000], d[230401];
 bool v[230401];
 std::vector<std::pair<int, int> > key[Maxp];
 std::queue<int> q;
@@ -69,7 +69,7 @@ int main(int argc, char const *argv[]) {
 void spfa() {
 	memset(d, 0x3f, sizeof(d));
 	memset(v, 0, sizeof(v));
-	d[1] = 0; v[1] = 1;
+	d[1] = 1; v[1] = 1;
 	q.push(1);
 	while (q.size()) {
 		int x = q.front(); q.pop();
