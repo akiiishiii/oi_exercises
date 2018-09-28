@@ -3,7 +3,7 @@
 #include <cstring>
 
 const int MAX_N = 1000001;
-int v[MAX_N] = {0}, prime[MAX_N] = {0}, phi[MAX_N] = {0}, s[MAX_N] = {0};
+long long v[MAX_N] = {0}, prime[MAX_N] = {0}, phi[MAX_N] = {0};
 int m;
 
 void euler(int n);
@@ -13,10 +13,10 @@ int main(int argc, char const *argv[]) {
     std::cin.tie(NULL);
     int n;
     euler(1000000);
-    for (int i = 2; i <= 1000000; i++)
-        s[i] = s[i - 1] + phi[i];
+    for (int i = 3; i <= 1000000; i++)
+        phi[i] += phi[i - 1];
     while (std::cin >> n && n)
-        std::cout << s[n] << '\n';
+        std::cout << phi[n] << '\n';
     return 0;
 }
 
