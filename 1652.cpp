@@ -6,8 +6,8 @@
 double a[105][105], ans[105];
 int n;
 
-void Simplify(int Line);
-int Check();
+void simplify(int l);
+int check();
 int Gauss();
 
 int main(int argc, char const *argv[]) {
@@ -17,9 +17,9 @@ int main(int argc, char const *argv[]) {
     for (int i = 1; i <= n; i++)
         for (int j = 1; j <= n + 1; j++)
             std::cin >> a[i][j];
-    int tmp = Gauss();
-    if (tmp != 1) {
-        std::cout << tmp << '\n';
+    int res = Gauss();
+    if (res != 1) {
+        std::cout << res << '\n';
         return 0;
     }
     for (int i = 1; i <= n; i++) {
@@ -32,27 +32,27 @@ int main(int argc, char const *argv[]) {
     return 0;
 }
 
-void Simplify(int Line) {
-    int Row = Line;
-    double Max = fabs(a[Row][Line]);
-    for (int i = Line + 1; i <= n; i++)
-        if (fabs(a[i][Line]) > Max) {
-            Max = fabs(a[i][Line]);
-            Row = i;
+void simplify(int l) {
+    int r = l;
+    double Max = fabs(a[r][l]);
+    for (int i = l + 1; i <= n; i++)
+        if (fabs(a[i][l]) > Max) {
+            Max = fabs(a[i][l]);
+            r = i;
         }
-    if (Row != Line)
-        for (int i = Line; i <= n + 1; i++)
-            std::swap(a[Line][i], a[Row][i]);
-    for (int i = Line + 1; i <= n; i++) {
-        if (fabs(a[Line][Line]) <= 1e-7)
+    if (r != l)
+        for (int i = l; i <= n + 1; i++)
+            std::swap(a[l][i], a[r][i]);
+    for (int i = l + 1; i <= n; i++) {
+        if (fabs(a[l][l]) <= 1e-7)
             continue;
-        double Multiple = a[i][Line] / a[Line][Line];
-        for (int j = Line; j <= n + 1; j++)
-            a[i][j] -= a[Line][j] * Multiple;
+        double mul = a[i][l] / a[l][l];
+        for (int j = l; j <= n + 1; j++)
+            a[i][j] -= a[l][j] * mul;
     }
 }
 
-int Check() {
+int check() {
     for (int i = 1; i <= n; i++) {
         bool b = false;
         for (int j = 1; j <= n; j++)
@@ -72,10 +72,10 @@ int Check() {
 
 int Gauss() {
     for (int i = 1; i <= n; i++)
-        Simplify(i);
-    int tmp = Check();
-    if (tmp != 1)
-        return tmp;
+        simplify(i);
+    int res = check();
+    if (res != 1)
+        return res;
     for (int i = n; i >= 1; i--) {
         for (int j = i + 1; j <= n; j++)
             a[i][n + 1] -= a[i][j] * ans[j];
