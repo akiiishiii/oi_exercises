@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <cmath>
 
-//#define debug
+#define debug
 
 #ifndef debug
 

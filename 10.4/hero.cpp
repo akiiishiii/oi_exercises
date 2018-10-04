@@ -2,9 +2,10 @@
 #include <iostream>
 #include <fstream>
 #include <cstring>
-#include <cstdlib>
+#include <algorithm>
+#include <functional>
 
-//#define debug
+#define debug
 
 #ifndef debug
 
@@ -18,8 +19,18 @@ std::ofstream out("hero.out");
 
 #endif // debug
 
+struct edge {
+    int u;
+    int v;
+    int z;
+};
+
+struct compare : public std::binary_function<edge, edge, bool> {
+    bool operator()(edge const &a, edge const &b) { return a.z == b.z ? a.u < b.u : a.z < b.z; }
+};
+
+
 int n, k;
-int d[1001][1001];
 
 int main(int argc, char const *argv[]) {
 	std::ios_base::sync_with_stdio(false);
@@ -29,6 +40,6 @@ int main(int argc, char const *argv[]) {
     for (int i = 1; i <= n; i++)
         for (int j = 1; j <= n; j++)
             in >> d[i][j];
-    std::cout << 2 << '\n';
+
     return 0;
 }
