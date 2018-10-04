@@ -1,37 +1,37 @@
+// dynamic allocation and polymorphism
 #include <iostream>
-#include <cstring>
-#include <fstream>
+using namespace std;
 
-std::ofstream out("prime.txt");
+class Polygon {
+  protected:
+    int width, height;
+  public:
+    Polygon (int a, int b) : width(a), height(b) {}
+    virtual int area (void) =0;
+    void printarea()
+      { cout << this->area() << '\n'; }
+};
 
-// 线性筛法
-int const MAX_N = 50001;
-int v[MAX_N], prime[MAX_N];
-int m;
-void primes(int n) {
-	memset(v, 0, sizeof(v)); // 最小质因子
-	m = 0; // 质数数量
-	for (int i = 2; i <= n; i++) {
-		if (v[i] == 0) { // i是质数
-			v[i] = i;
-			prime[++m] = i;
-		}
-		// 给当前的数i乘上一个质因子
-		for (int j = 1; j <= m; j++) {
-			// i有比prime[j]更小的质因子，或者超出n的范围
-			if (prime[j] > v[i] || prime[j] > n/i) break;
-			// prime[j]是合数i*prime[j]的最小质因子
-			v[i*prime[j]] = prime[j];
-		}
-	}
-	for (int i = 1; i <= m; i++)
-		out << prime[i] << ", ";
-}
+class Rectangle: public Polygon {
+  public:
+    Rectangle(int a,int b) : Polygon(a,b) {}
+    int area()
+      { return width*height; }
+};
 
-int main(int argc, char const *argv[]) {
-    std::ios_base::sync_with_stdio(false);
-    out << "int prime[] = {";
-    primes(50000);
-    out << "\b};\n";
-    return 0;
+class Triangle: public Polygon {
+  public:
+    Triangle(int a,int b) : Polygon(a,b) {}
+    int area()
+      { return width*height/2; }
+};
+
+int main () {
+  Polygon * ppoly1 = new Rectangle (4,5);
+  Polygon * ppoly2 = new Triangle (4,5);
+  ppoly1->printarea();
+  ppoly2->printarea();
+  delete ppoly1;
+  delete ppoly2;
+  return 0;
 }
