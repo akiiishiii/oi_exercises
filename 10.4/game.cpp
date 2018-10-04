@@ -22,7 +22,7 @@ int main(int argc, char const *argv[]) {
     std::ios_base::sync_with_stdio(false);
     in.tie(NULL);
     int n, m;
-    int dice[7];
+    int dice[7] = {0};
     in >> n >> m;
     for (int k = 0; k < m; k++) {
         for (int i = 1; i <= n; i++) {
