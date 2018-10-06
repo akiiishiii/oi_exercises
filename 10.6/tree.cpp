@@ -6,7 +6,7 @@
 #include <iostream>
 #include <queue>
 
-//#define debug
+#define debug
 
 #ifndef debug
 
@@ -21,7 +21,7 @@ std::ofstream out("tree.out");
 #endif // debug
 
 const int Maxn = 100010;
-int f[Maxn][20], d[Maxn], son[Maxn];
+int f[Maxn][20], d[Maxn], son[Maxn], prt[Maxn];
 int ver[Maxn << 1], Next[Maxn << 1], head[Maxn];
 int n, m, tot, t, maxd = 1;
 bool v[Maxn] = {false};
@@ -31,6 +31,7 @@ inline void add(int x, int y) { ver[++tot] = y; Next[tot] = head[x]; head[x] = t
 void bfs();
 void dfs(int x);
 int lca(int x, int y);
+int pprt(int x, int ds);
 
 int main(int argc, char const *argv[]) {
     std::ios_base::sync_with_stdio(false);
@@ -38,7 +39,7 @@ int main(int argc, char const *argv[]) {
     in >> n;
     t = int(log2(n)) + 1;
     for (int i = 1; i <= n; i++)
-        head[i] = d[i] = 0;
+        head[i] = d[i] = 0, son[i] = 1, prt[i] = i;
     tot = 0;
     for (int i = 1, x, y; i < n; i++) {
         in >> x >> y;
@@ -46,18 +47,25 @@ int main(int argc, char const *argv[]) {
         add(y, x);
     }
     bfs();
-    for (int i = 1; i <= n; i++)
-        son[i] = 1;
     dfs(1);
     in >> m;
-    for (int i = 1, x, y, res; i <= m; i++) { //仅限二叉树情况
+    for (int i = 1, x, y, res, dd, dlca; i <= m; i++) {
         in >> x >> y;
-        if (x == y) {
-            out << n - 1 << '\n';
-            continue;
-        }
-        int plca = lca(x, y);
-        res = n - son[plca] + ((plca == x || plca == y) ? 0 : 1);
+        dlca = lca(x, y);
+        dd = d[x] + d[y] - 2 * d[dlca];
+        if (dd & 1)
+            res = 0;
+        else if (x == y)
+            res = n;
+        dd /= 2;
+        if (d[x] < d[y])
+            std::swap(x, y);
+        int z = x;
+        z = pprt(z, d[z] - dd);
+        if (z != dlca)
+            res = son[z] - son[pprt(x, d[z] + 1)];
+        else
+            res = n - son[pprt(x, d[z] + 1)] - son[pprt(y, d[z] + 1)];
         out << res << '\n';
     }
     return 0;
@@ -74,6 +82,7 @@ void bfs() {
             if (d[y])
                 continue;
             d[y] = d[x] + 1;
+            prt[y] = x;
             maxd = std::max(maxd, d[y]);
             f[y][0] = x;
             for (int j = 1; j <= t; j++)
@@ -108,4 +117,12 @@ int lca(int x, int y) {
         if (f[x][i] != f[y][i])
             x = f[x][i], y = f[y][i];
     return f[x][0];
+}
+
+int pprt(int x, int ds) {
+    int k = int(log2(d[x]));
+    for (int i = k; i >= 0; i--)
+        if (d[x] - (1 << i) >= ds)
+            x = f[x][i];
+    return x;
 }

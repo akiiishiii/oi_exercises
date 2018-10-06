@@ -44,7 +44,7 @@ int main(int argc, char const *argv[]) {
         while (q1.size() && f[q1.back()] <= f[i])
             q1.pop_back();
         q1.push_back(i);
-        while (q2.size() && f[q2.back()] <= f[i])
+        while (q2.size() && f[q2.back()] >= f[i])
             q2.pop_back();
         q2.push_back(i);
         while (f[q1.front()] - f[q2.front()] > m) {
