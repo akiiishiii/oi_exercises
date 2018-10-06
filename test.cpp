@@ -1,114 +1,55 @@
-#include<iostream>
-#include<stdio.h>
-#include<cstring>
+#include <algorithm>
+#include <cstdio>
+#define maxn 1000005
 using namespace std;
-struct ss{
-    int next,to,val;
-} data[500010];
-int head[200010],qe[500010],used[500010],d[500010],color[500010],sum[500010];
-int n,m,p,q,timeclock,ans,tot,top,S,s,t,P,jiu;
-int x[500010],y[500010],dfn[500010],low[500010],instack[500010],stack[500010],money[500010];
-void add(int a,int b)
+int n, m, ans;
+int fir[maxn], nxt[2 * maxn], to[2 * maxn], w[2 * maxn], tot;
+long long f[maxn];
+int S1[maxn], S2[maxn], h1, h2, t1 = -1, t2 = -1;
+inline void add(int x, int y, int z)
 {
-    data[++p].to=b;
-    data[p].next=head[a];
-    head[a]=p;
+    nxt[++tot] = fir[x];
+    fir[x] = tot;
+    to[tot] = y;
+    w[tot] = z;
 }
-void Add(int a,int b,int c)
+inline void dfs(int u, int past, long long s, int &id)
 {
-    data[++p].to=b;
-    data[p].next=head[a];
-    data[p].val=c;
-    head[a]=p;
-}
-void tarjan(int a)//标准tarjan
-{
-    dfn[a]=low[a]=++timeclock;
-    instack[a]=1;
-    stack[++top]=a;
-    for(int i=head[a];i;i=data[i].next)
-    {
-        int v=data[i].to;
-        if(!dfn[v])
-        {
-            tarjan(v);
-            low[a]=min(low[a],low[v]);
-        }
-        else
-        if(instack[v])
-        low[a]=min(low[a],dfn[v]);
-    }
-    if(dfn[a]==low[a])
-    {
-        tot++;
-        while(stack[top+1]!=a)
-        {
-            color[stack[top]]=tot;
-            sum[tot]+=money[stack[top]];
-            instack[stack[top--]]=0;
-        }
-    }
-}
-void spfa()//标准spfa
-{
-    for(int i=1;i<=tot;i++)
-    d[i]=0x7fffffff;
-    int ts=color[S];
-    d[ts]=-sum[ts];
-    qe[0]=ts;p=q=0;
-    while(p<=q)
-    {
-        s=qe[p%n];
-        used[s]=0;
-        t=head[s];
-        while(t)
-        {
-            if(d[s]+data[t].val<d[data[t].to])
-            {
-                d[data[t].to]=d[s]+data[t].val;
-                if(!used[data[t].to])
-                {
-                    qe[++q%n]=data[t].to;
-                    used[data[t].to]=1;
-                }
-            }
-            t=data[t].next;
-        }
-        p++;
-    }
+    if (s > f[id])
+        id = u;
+    if (s > f[u])
+        f[u] = s;
+    for (int i = fir[u]; i; i = nxt[i])
+        if (to[i] != past)
+            dfs(to[i], u, s + w[i], id);
 }
 int main()
 {
-    scanf("%d%d",&n,&m);
-    for(int i=1;i<=m;i++)
+    int x, y, L;
+    in >>n >> m;
+    for (int i = 2; i <= n; i++)
+        in >> x>>y, add(i, x, y), add(x, i, y);
+    x = y = 0, dfs(1, 0, 0, x);
+    dfs(x, 0, 0, y);
+    dfs(y, 0, 0, x);
+    L = 1;
+    for (int i = 1; i <= n; i++)
     {
-        scanf("%d%d",&x[i],&y[i]);
-        add(x[i],y[i]);
+        while (t1 >= h1 && f[S1[t1]] <= f[i])
+            t1--;
+        S1[++t1] = i;
+        while (t2 >= h2 && f[S2[t2]] >= f[i])
+            t2--;
+        S2[++t2] = i;
+        while (f[S1[h1]] - f[S2[h2]] > m)
+        {
+            if (L == S1[h1])
+                h1++;
+            if (L == S2[h2])
+                h2++;
+            L++;
+        }
+        ans = max(ans, i - L + 1);
     }
-    for(int i=1;i<=n;i++)
-    scanf("%d",&money[i]);
-    for(int i=1;i<=n;i++)
-    if(!dfn[i])
-    {
-       tarjan(i);
-    }
-    memset(data,0,sizeof(data));
-    memset(head,0,sizeof(head));
-    p=0;
-    for(int i=1;i<=m;i++)
-    {
-        if(color[x[i]]!=color[y[i]])
-        Add(color[x[i]],color[y[i]],-(sum[color[y[i]]]));
-    }
-    scanf("%d",&S);
-    spfa();
-    scanf("%d",&P);
-    for(int i=1;i<=P;i++)
-    {
-        scanf("%d",&jiu);
-        if(-d[color[jiu]]>ans)
-        ans=-d[color[jiu]];
-    }
-    printf("%d\n",ans);
-    return 0;
+    printf("%d", ans);
 }
