@@ -50,8 +50,12 @@ int main(int argc, char const *argv[]) {
         son[i] = 1;
     dfs(1);
     in >> m;
-    for (int i = 1, x, y, res; i <= m; i++) {
+    for (int i = 1, x, y, res; i <= m; i++) { //仅限二叉树情况
         in >> x >> y;
+        if (x == y) {
+            out << n - 1 << '\n';
+            continue;
+        }
         int plca = lca(x, y);
         res = n - son[plca] + ((plca == x || plca == y) ? 0 : 1);
         out << res << '\n';
