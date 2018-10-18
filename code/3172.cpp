@@ -28,23 +28,24 @@ int main(int argc, char const *argv[]) {
             b += n;
         ::add(a + 2 * n, b), ::add(b + 2 * n, a);
     }
-    for (int i = 1; i <= n * 4; i++)
+    for (int i = 1; i < n * 4; i++)
         if (!dfn[i])
             ::tarjan(i);
     for (int i = 1; i < n; i++)
-        if (c[i] == c[i + 2 * n]) {
+        if (c[i] == c[i + 2 * n] || c[i + n] == c[i + 3 * n]) {
             std::cout << "bad luck\n";
             return 0;
         }
+    for (int i = 1; i < 4 * n; i++)
+        opp[c[i]] = c[(i > 2 * n) ? (i - 2 * n) : (i + 2 * n)];
     for (int i = 1; i <= cnt; i++)
         if (!vis[i])
             vis[opp[i]] = true;
-    for (int i = 1; i < n; i++) {
+    for (int i = 2 * n + 1; i < 4 * n; i++)
         if (!vis[i])
-            std::cout << i << "h ";
-        if (!vis[i + n])
-            std::cout << i << "w ";
-    }
+            std::cout << i - 2 * n << "h ";
+        else if (!vis[i + n])
+            std::cout << i - 2 * n << "w ";
     std::cout << '\n';
     return 0;
 }
