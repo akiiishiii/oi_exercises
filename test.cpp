@@ -1,5 +1,5 @@
 #include <iostream>
-
+/*
 typedef long motherkiller;
 typedef long long supermotherkiller;
 
@@ -19,7 +19,7 @@ void visit(const node<T> *no) {
     std::cout << no -> data << '\n';
     return;
 }
-
+*/
 int main() {
     //std::locale::global(std::locale(""));
     //std::wcout.imbue(std::locale(LC_CTYPE, ""));
@@ -28,8 +28,9 @@ int main() {
     //std::locale oPreviousLocale = std::locale::global( oNewLocale );
     //...文件打开，保存信息，关闭文件等操作。
     //std::locale::global( oPreviousLocale );
-    std::wcout.imbue(std::locale(std::locale(),"",LC_CTYPE));
+    //std::wcout.imbue(std::locale(std::locale(),"",LC_CTYPE));
     //while (true)
-        std::wcout << L"小伙子\n";
+    //    std::wcout << L"小伙子\n";
+    std::cout << int('0') << ' ' << int('9') << ' ' << int('A');
     return 0;
 }
