@@ -22,7 +22,7 @@ std::ofstream out("sheet.out");
 struct student {
     std::string name;
     int score = 0;
-    std::vector<int> sheet;
+    int sheet[101] = {0};
     bool operator<(student const &s) const { return ((score == s.score) ? (name < s.name) : (score > s.score)); }
 } vs[101];
 
@@ -34,25 +34,21 @@ struct answer {
 int main(int argc, char const *argv[]) {
     std::ios_base::sync_with_stdio(false);
     in.tie(NULL);
+    std::string s;
     int n, m;
     in >> n >> m;
     for (int i = 0; i < n; i++)
         in >> vs[i].name;
     for (int i = 0; i < m; i++) {
-        in >> va[i].full >> va[i].half;
-        char c;
-        while ((c = in.get()) != '\n')
-            if (c == ' ')
-                continue;
-            else
-                va[i].ans |= (1 << (int(c) - 65));
+        in >> va[i].full >> va[i].half >> s;
+        for (int j = 0; j < s.length(); j++)
+            va[i].ans |= (1 << (int(s[j]) - 65));
     }
     for (int i = 0; i < n; i++) {
-        vs[i].sheet.resize(m);
         for (int k = 0; k < 4; k++) {
+            in >> s;
             for (int j = 0; j < m; j++) {
-                char c = in.get();
-                if (c == 'X')
+                if (s[j] == 'X')
                     vs[i].sheet[j] |= (1 << k);
             }
         }
