@@ -7,7 +7,7 @@
 
 const int M = 19931117, N = 1000010;
 int prt[N], n;
-int indeg[N], pere[N], dp[N][2];
+int indeg[N], p[N], dp[N][2];
 int head[N], ver[N], Next[N], tot;
 std::vector<std::pair<int, int> > ent;
 int q[N], l, r;
@@ -29,11 +29,11 @@ int main(int argc, char const *argv[]) {
         int x;
         scanf("%d", &x);
         if (search(i) != search(x)) {
-            pere[i] = x, prt[search(i)] = search(x), ++indeg[x];
+            p[i] = x, prt[search(i)] = search(x), ++indeg[x];
             ver[tot] = i, Next[tot] = head[x];
             head[x] = tot++;
         } else
-            pere[i] = -1, ent.push_back(std::make_pair(i, x));
+            p[i] = -1, ent.push_back(std::make_pair(i, x));
     }
     for (int i = 1; i <= n; i++)
         if (!indeg[i])
@@ -60,50 +60,50 @@ int main(int argc, char const *argv[]) {
                 dp[c][1] -= dlt;
             }
         }
-        if (pere[c] != -1) {
-            --indeg[pere[c]];
-            if (!indeg[pere[c]])
-                q[r++] = pere[c];
+        if (p[c] != -1) {
+            --indeg[p[c]];
+            if (!indeg[p[c]])
+                q[r++] = p[c];
         }
     }
     int ans = 0;
     for (std::vector<std::pair<int, int> >::iterator it = ent.begin(); it != ent.end(); ++it) {
         int x = it->first, y = it->second;
-        int r = dp[x][1], rc = 0;
+        int tmp = dp[x][1], sum = 0;
         for (int p = head[y]; p != -1; p = Next[p])
-            rc += dp[ver[p]][1];
-        if (dp[y][1] < rc + 1) {
-            dp[y][1] = rc + 1;
-            int cr = pere[y];
-            while (cr != -1) {
-                int t0 = dp[cr][0], t1 = dp[cr][1];
-                if (head[cr] == -1)
-                    dp[cr][0] = 0, dp[cr][1] = -M;
+            sum += dp[ver[p]][1];
+        if (dp[y][1] < sum + 1) {
+            dp[y][1] = sum + 1;
+            int py = p[y];
+            while (py != -1) {
+                int t0 = dp[py][0], t1 = dp[py][1];
+                if (head[py] == -1)
+                    dp[py][0] = 0, dp[py][1] = -M;
                 else {
-                    dp[cr][0] = 0, dp[cr][1] = 1;
+                    dp[py][0] = 0, dp[py][1] = 1;
                     bool zr = false;
-                    for (int p = head[cr]; p != -1; p = Next[p]) {
+                    for (int p = head[py]; p != -1; p = Next[p]) {
                         int t = ver[p], rr = ::max(dp[t][0], dp[t][1]);
                         if (dp[t][0] == rr)
                             zr = true;
-                        dp[cr][0] += rr, dp[cr][1] += rr;
+                        dp[py][0] += rr, dp[py][1] += rr;
                     }
                     if (!zr) {
                         int dlt = M;
-                        for (int p = head[cr]; p != -1; p = Next[p]) {
+                        for (int p = head[py]; p != -1; p = Next[p]) {
                             int t = ver[p];
                             dlt = ::min(dlt, dp[t][1] - dp[t][0]);
                         }
-                        dp[cr][1] -= dlt;
+                        dp[py][1] -= dlt;
                     }
                 }
-                if (t0 == dp[cr][0] && t1 == dp[cr][1])
+                if (t0 == dp[py][0] && t1 == dp[py][1])
                     break;
                 else
-                    cr = pere[cr];
+                    py = p[py];
             }
         }
-        r = ::max(r, dp[x][0]), ans += r;
+        tmp = ::max(tmp, dp[x][0]), ans += tmp;
     }
     std::cout << ans << '\n';
     return 0;
