@@ -2,7 +2,7 @@
 #include <iostream>
 #include <fstream>
 
-//#define debug
+#define debug
 
 #ifndef debug
 

@@ -2,8 +2,10 @@
 #include <iostream>
 #include <fstream>
 #include <cstring>
+#include <algorithm>
+#include <deque>
 
-//#define debug
+#define debug
 
 #ifndef debug
 
@@ -17,10 +19,9 @@ std::ofstream out("divide.out");
 
 #endif // debug
 
-int m, n, a, b;
-int x[10005], g[205], num[205];
-long long s[10005], avg = 0, ans = 0x3f3f3f3f3f3f3f3f;
-bool flag = true;
+long long m, n, a, b, room, stu;
+long long x[10005], g[205];
+long long s[10005], f[205][10005], avg, ans;
 
 int main(int argc, char const *argv[]) {
     std::ios_base::sync_with_stdio(false);
@@ -28,28 +29,42 @@ int main(int argc, char const *argv[]) {
     int T;
     in >> T;
     while (T--) {
+        memset(x, 0, sizeof(x));
         memset(s, 0, sizeof(s));
-        avg = 0, ans = 0x3f3f3f3f3f3f3f3f;
+        memset(g, 0, sizeof(g));
         in >> m >> n >> a >> b;
+        avg = 0, ans = 1ll << 60, room = 0, stu = 0;
+        for (int i = 0; i <= n; i++)
+            for (int j = 0; j <= m; j++)
+                f[i][j] = 1ll << 60;
         for (int i = 1; i <= m; i++)
             in >> x[i], avg += x[i];
         avg /= m;
         for (int i = 1; i <= m; i++)
             s[i] = s[i - 1] + (x[i] - avg) * (x[i] - avg);
-        for (int i = 1; i <= n; i++) {
+        for (int i = 1; i <= n; i++)
             in >> g[i];
-            if (g[i] < 0)
-                flag = false;
-        }
-        if (flag) {
-            for (int i = 1; i <= n; i++) {
-
+        f[0][0] = 0;
+        std::deque<long long> q;
+        for (int i = 1; i <= n; i++) {
+            q.clear();
+            for (int j = i * a; j <= std::min(m, i * b); j++) {
+                while (q.size() && q.front() < j - b)
+                    q.pop_front();
+                while (q.size() && f[i - 1][q.back()] - g[i] * s[q.back()] > f[i - 1][j - a] - g[i] * s[j - a])
+                    q.pop_back();
+                q.push_back(j - a);
+                f[i][j] = f[i - 1][q.front()] + g[i] * (s[j] - s[q.front()]);
             }
-        } else {
-            for (int i = 1; i <= n; i++) {
-
+            if (f[i][m] < ans) {
+                ans = f[i][m];
+                room = i;
             }
         }
+        for (int i = m - b; i <= m - a; i++)
+            if (f[room - 1][i] + g[room] * (s[m] - s[i]) == ans)
+                stu = m - i;
+        out << ans << ' ' << room << ' ' << stu << '\n';
     }
     return 0;
 }
