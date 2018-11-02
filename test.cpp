@@ -1,13 +1,11 @@
-#include <iomanip>
 #include <iostream>
 
+int n, a[100005];
+
 int main(int argc, char const *argv[]) {
-    long double price;
-    std::cout << "Please, enter the price: ";
-    std::cin >> std::get_money(price);
-    if (std::cin.fail())
-        std::cout << "Error reading price\n";
-    else
-        std::cout << "The price entered is: " << std::put_money(price) << '\n';
+    std::cin >> n;
+    for (int i = 1; i <= n; i++)
+        std::cin >> a[i];
+
     return 0;
 }
