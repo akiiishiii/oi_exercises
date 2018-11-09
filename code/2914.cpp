@@ -79,7 +79,7 @@ void numcpy(int a[], int b[], int det) {
 }
 
 void divide(int a[], int b[], int c[]) {
-    int tmp[10005];
+    int tmp[20005];
     c[0] = a[0] - b[0] + 1;
     for (int i = c[0]; i > 0; i--) {
         memset(tmp, 0, sizeof(tmp));
