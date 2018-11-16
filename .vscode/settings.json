@@ -106,6 +106,7 @@
     "terminal.integrated.shell.windows": "C:\\Windows\\System32\\cmd.exe",
     //  "editor.minimap.enabled": false,
     //  "editor.fontFamily": "等距更纱黑体 SC",
+    "editor.fontFamily": "Consolas",
     "files.encoding": "utf8",
     "editor.cursorStyle": "underline",
     "editor.dragAndDrop": false,
@@ -116,5 +117,7 @@
     "files.trimFinalNewlines": true,
     "workbench.sideBar.location": "right",
     "clang.executable": "clang",
-    "C_Cpp.clang_format_style": "{BasedOnStyle: LLVM, IndentWidth: 4}"
+    "C_Cpp.clang_format_style": "{BasedOnStyle: LLVM, IndentWidth: 4}",
+    "workbench.statusBar.feedback.visible": false,
+    "terminal.integrated.fontFamily": "'Courier New'"
 }
