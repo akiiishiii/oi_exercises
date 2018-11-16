@@ -43,6 +43,7 @@ void insert(int v, int l, int r, int c) {
     if (l > tree[v].b || r < tree[v].a)
         return;
     if (l <= tree[v].a && r >= tree[v].b) {
+        tree[v].lc = tree[v].rc = tree[v].color = c;
         tree[v].cnt = 1;
         return;
     }
