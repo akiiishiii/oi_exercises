@@ -97,7 +97,9 @@
         "typeindex": "cpp",
         "stack": "cpp",
         "algorithm": "cpp",
-        "queue": "cpp"
+        "queue": "cpp",
+        "stdio.h": "c",
+        "math.h": "c"
     },
     "C_Cpp.intelliSenseEngineFallback": "Disabled", // 效果效果比cpptools要好
     "files.autoGuessEncoding": false,
