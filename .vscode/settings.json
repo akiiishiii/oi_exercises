@@ -121,5 +121,5 @@
     "clang.executable": "clang",
     "C_Cpp.clang_format_style": "{BasedOnStyle: LLVM, IndentWidth: 4}",
     "workbench.statusBar.feedback.visible": false,
-    "terminal.integrated.fontFamily": "'Courier New'"
+    "terminal.integrated.fontFamily": "'Lucida console'"
 }
