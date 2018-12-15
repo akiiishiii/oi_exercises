@@ -23,16 +23,19 @@ int main(int argc, char const *argv[]) {
     std::cin.tie(NULL);
     int n, m;
     std::cin >> n;
-    for (int i = 1; i <= n; i++)
-        std::cin >> val[i];
+    for (int i = 0; i < n; i++)
+        std::cin >> val[i], link(i, (i + val[i] <= n) ? (i + val[i]) : (n + 1));
     std::cin >> m;
     for (int i = 1, x, y, z; i <= m; i++) {
         std::cin >> x >> y;
         if (x == 1) {
-
+            split(y, n + 1);
+            std::cout << size[n + 1] - 1 << '\n';
         } else if (x == 2) {
             std::cin >> z;
-
+            cut(y, (y + val[y] <= n) ? (y + val[y]) : (n + 1));
+            link(y, (y + z <= n) ? (y + z) : (n + 1));
+            val[y] = z;
         }
     }
     return 0;
