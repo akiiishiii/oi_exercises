@@ -26,11 +26,13 @@ int main(int argc, char const *argv[]) {
             std::cin >> x;
             for (int j = l[a]; j <= r[a]; j++)
                 s[j] += x;
-        } else {
+        } else if (cmd == 2) {
             long long ans = 0;
             for (int j = l[a]; j <= r[a]; j++)
                 ans += s[j];
             std::cout << ans << '\n';
+        } else {
+
         }
     }
     return 0;
