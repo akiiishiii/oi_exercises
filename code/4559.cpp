@@ -1,105 +1,93 @@
 // 4559.cpp
-// 不知道
 #include <algorithm>
 #include <cmath>
-#include <cstdio>
-using namespace std;
-const int maxn = 10001;
-int n, m, block, qcnt, ccnt, L, R, head, ans;
-int a[maxn], b[maxn], A[maxn], cnt[1000001];
-char ch[5];
-struct Ask {
-    int l, r, lb, rb, tim, id;
-} q[maxn];
+#include <iostream>
+#include <string>
 
-struct Modify {
-    int x, y, last;
-} c[maxn];
+int const maxn = 10001;
+int n, m, blks, qcnt, ccnt, l, r, h, ans;
+int a[maxn], b[maxn], res[maxn], cnt[1000001];
 
-inline int Getblock(int num) { return (num - 1) / block + 1; }
+struct query {
+    int l, r;
+    int lb, rb;
+    int tim, id;
+    bool operator<(query const &qs) const;
+} qs[maxn];
 
-bool cmp(Ask q, Ask qq) {
-    if (q.lb == qq.lb) {
-        if (q.rb == qq.rb)
-            return q.tim < qq.tim;
-        return q.rb < qq.rb;
+struct modify {
+    int x, y, latest;
+} ms[maxn];
+
+void change(int x, int col);
+void update(int x, int d);
+
+int main(int argc, char const *argv[]) {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(NULL);
+    std::string ch;
+    std::cin >> n >> m;
+    for (int i = 1; i <= n; i++)
+        std::cin >> a[i], b[i] = a[i];
+    blks = int(sqrt(n));
+    for (int i = 1; i <= m; i++) {
+        std::cin >> ch;
+        if (ch[0] == 'R') {
+            ccnt++, std::cin >> ms[ccnt].x >> ms[ccnt].y;
+            ms[ccnt].latest = b[ms[ccnt].x];
+            b[ms[ccnt].x] = ms[ccnt].y;
+        } else {
+            qcnt++, std::cin >> qs[qcnt].l >> qs[qcnt].r;
+            qs[qcnt].id = qcnt;
+            qs[qcnt].lb = (qs[qcnt].l - 1) / blks + 1;
+            qs[qcnt].rb = (qs[qcnt].r - 1) / blks + 1;
+            qs[qcnt].tim = ccnt;
+        }
     }
-    return q.lb < qq.lb;
+    std::sort(qs + 1, qs + qcnt + 1);
+    l = 1, r = 0, h = 0;
+    for (int i = 1; i <= qcnt; i++) {
+        while (h > qs[i].tim)
+            change(ms[h].x, ms[h].latest), h--;
+        while (h < qs[i].tim)
+            h++, change(ms[h].x, ms[h].y);
+        while (r < qs[i].r)
+            update(++r, 1);
+        while (l > qs[i].l)
+            update(--l, 1);
+        while (r > qs[i].r)
+            update(r--, -1);
+        while (l < qs[i].l)
+            update(l++, -1);
+        res[qs[i].id] = ans;
+    }
+    for (int i = 1; i <= qcnt; i++)
+        std::cout << res[i] << '\n';
+    return 0;
 }
 
-void Change(int x, int col) {
-    if (L <= x && x <= R) {
-        cnt[a[x]]--;
-        if (cnt[a[x]] == 0)
-            ans--;
-        a[x] = col;
-        if (cnt[a[x]] == 0)
-            ans++;
-        cnt[a[x]]++;
-    } else
-        a[x] = col;
+bool query::operator<(query const &qs) const {
+    if (lb == qs.lb) {
+        if (rb == qs.rb)
+            return tim < qs.tim;
+        return rb < qs.rb;
+    }
+    return lb < qs.lb;
 }
 
-void Update(int x, int d) {
+void change(int x, int col) {
+    if ((l <= x && x <= r) && !(--cnt[a[x]]))
+        ans--;
+    a[x] = col;
+    if ((l <= x && x <= r) && !(cnt[a[x]]++))
+        ans++;
+}
+
+void update(int x, int d) {
     int temp = cnt[a[x]];
     cnt[a[x]] += d;
     if (temp == 0 && cnt[a[x]] == 1)
         ans++;
     else if (temp == 1 && cnt[a[x]] == 0)
         ans--;
-}
-
-void MoDui() {
-    L = 1;
-    R = 0;
-    head = 0;
-    for (int i = 1; i <= qcnt; i++) {
-        while (head > q[i].tim) {
-            Change(c[head].x, c[head].last);
-            head--;
-        }
-        while (head < q[i].tim) {
-            head++;
-            Change(c[head].x, c[head].y);
-        }
-        while (R < q[i].r)
-            R++, Update(R, 1);
-        while (L > q[i].l)
-            L--, Update(L, 1);
-        while (R > q[i].r)
-            Update(R, -1), R--;
-        while (L < q[i].l)
-            Update(L, -1), L++;
-        A[q[i].id] = ans;
-    }
-}
-
-int main() {
-    scanf("%d%d", &n, &m);
-    for (int i = 1; i <= n; i++) {
-        scanf("%d", &a[i]);
-        b[i] = a[i];
-    }
-    block = sqrt(n);
-    for (int i = 1; i <= m; i++) {
-        scanf("%s", ch);
-        if (ch[0] == 'R') {
-            ccnt++;
-            scanf("%d%d", &c[ccnt].x, &c[ccnt].y);
-            c[ccnt].last = b[c[ccnt].x];
-            b[c[ccnt].x] = c[ccnt].y;
-        } else {
-            qcnt++;
-            scanf("%d%d", &q[qcnt].l, &q[qcnt].r);
-            q[qcnt].id = qcnt;
-            q[qcnt].lb = Getblock(q[qcnt].l);
-            q[qcnt].rb = Getblock(q[qcnt].r);
-            q[qcnt].tim = ccnt;
-        }
-    }
-    sort(q + 1, q + qcnt + 1, cmp);
-    MoDui();
-    for (int i = 1; i <= qcnt; i++)
-        printf("%d\n", A[i]);
-    return 0;
 }
