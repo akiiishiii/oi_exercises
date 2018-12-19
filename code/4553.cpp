@@ -7,6 +7,7 @@
 int const Maxn = 50001;
 int n, m, k, pos[Maxn], c[Maxn];
 long long s[Maxn], tmp;
+long long a[Maxn];
 
 struct query {
     int l, r, id;
@@ -23,8 +24,11 @@ struct comp_by_id : public std::binary_function<query, query, bool> {
     bool operator()(query const &a, query const &b) { return (a.id < b.id); }
 };
 
+template <typename T> inline T lowbit(T const x) { return x & (-x); }
 inline long long sqr(long long x) { return x * x; }
 void update(int p, int d);
+int sum(int x);
+int add(int x, int d);
 
 int main(int argc, char const *argv[]) {
     std::ios_base::sync_with_stdio(false);
@@ -32,6 +36,7 @@ int main(int argc, char const *argv[]) {
     std::cin >> n >> m >> k;
     for (int i = 1; i <= n; i++)
         std::cin >> c[i];
+    for (int i = n; i; i++)
     int blk = int(sqrt(n));
     for (int i = 1; i <= n; i++)
         pos[i] = (i - 1) / blk + 1;
@@ -61,4 +66,16 @@ void update(int p, int d) {
     tmp -= sqr(s[c[p]]);
     s[c[p]] += d;
     tmp += sqr(s[c[p]]);
+}
+
+int sum(int x) {
+    int ret = 0;
+    for (int i = x; i > 0; i -= lowbit(i))
+        ret += a[i];
+    return ret;
+}
+
+int add(int x, int d) {
+    for (int i = x; i <= n; i += lowbit(i))
+        a[i] += d;
 }
