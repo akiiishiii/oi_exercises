@@ -45,7 +45,7 @@ int main(int argc, char const *argv[]) {
         } else {
             n++;
             for (int j = 0; j < K; j++)
-                a[n].d[j] = q[j];
+                a[n].maxx[i] = a[n].minn[i] = a[n].d[j] = q[j];
             insert(rt, n);
         }
     }
