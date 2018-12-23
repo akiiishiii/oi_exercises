@@ -14,7 +14,7 @@ struct point {
     int maxx[3], minn[3];
     int l, r;
     bool operator<(point const &x) const { return d[dime] < x.d[dime]; }
-} a[110]; //[600010];
+} a[600010];
 
 void pushup(int x);
 void build(int &root, int l, int r, int d);
