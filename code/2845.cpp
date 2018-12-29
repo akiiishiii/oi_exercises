@@ -1,79 +1,80 @@
 // 2845.cpp
-#include <algorithm>
-#include <cstdio>
-#include <cstring>
 #include <iostream>
-using namespace std;
-const int MAXN = 100010;
-#define rep(i, a, b) for (int i = a; i <= b; ++i)
-#define erp(i, a, b) for (int i = a; i >= b; --i)
+#include <algorithm>
 
-int N, M;
-namespace BIT {
-int c[MAXN], r;
-void add(int i, int x) {
-    for (; i <= N; i += i & -i)
-        c[i] += x;
-}
-int sum(int i) {
-    r = 0;
-    for (; i > 0; i -= i & -i)
-        r += c[i];
-    return r;
-}
-}; // namespace BIT
+int const Maxn = 100010;
+int n, m;
+int c[Maxn], rs[Maxn], lb[Maxn], pos[Maxn];
+long long ans[Maxn];
 
-struct dot {
-    int t, x, y; // every t, x, y is unique
-} a[MAXN], np[MAXN];
+struct insert {
+    int t, x, y;
+} a[Maxn], tmp[Maxn];
 
-int rxiao[MAXN], lda[MAXN];
-long long ans[MAXN];
-void cdq(int L, int R) {
-    using namespace BIT;
-    if (L >= R)
-        return;
-    int mid = (L + R) >> 1;
+inline int lowbit(int const x) { return x & (-x); }
+void add(int x, int v);
+int sum(int x);
+void cdq(int l, int r);
 
-    int l1 = L, l2 = mid + 1;
-    rep(i, L, R) {
-        if (a[i].t <= mid)
-            np[l1++] = a[i];
-        else
-            np[l2++] = a[i];
-    }
-    rep(i, L, R) a[i] = np[i];
-
-    l1 = L;
-    rep(i, mid + 1, R) // 先找坐标更小，值更大的
-    {
-        for (; l1 <= mid && np[l1].x < np[i].x; ++l1)
-            add(np[l1].y, 1);
-        lda[np[i].t] += (l1 - L) - sum(np[i].y); //注意是+=
-    }
-    rep(i, L, l1 - 1) add(np[i].y, -1); //将树状数组清零
-
-    l1 = mid;
-    erp(i, R, mid + 1) // 再找坐标更大，值更小的
-    {
-        for (; l1 >= L && np[l1].x > np[i].x; --l1)
-            add(np[l1].y, 1);
-        rxiao[np[i].t] += sum(np[i].y - 1);
-    }
-    rep(i, l1 + 1, mid) add(np[i].y, -1);
-
-    cdq(L, mid), cdq(mid + 1, R);
-}
-
-int pos[MAXN];
-int main() {
-    std::cin >> N >> M;
-    rep(i, 1, N) std::cin >> a[i].y, a[i].x = i, pos[a[i].y] = i;
-    int t, tmr = N;
-    rep(i, 1, M) std::cin >> t, a[pos[t]].t = tmr--;
-    rep(i, 1, N) if (!a[i].t) a[i].t = tmr--;
-    cdq(1, N);
-    rep(i, 1, N) ans[i] = ans[i - 1] + rxiao[i] + lda[i];
-    erp(i, N, N - M + 1) cout << ans[i] << '\n';
+int main(int argc, char const *argv[]) {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(NULL);
+    std::cin >> n >> m;
+    for (int i = 1; i <= n; i++)
+        std::cin >> a[i].y, a[i].x = i, pos[a[i].y] = i;
+    int t, cnt = n;
+    for (int i = 1; i <= m; i++)
+        std::cin >> t, a[pos[t]].t = cnt--;
+    for (int i = 1; i <= n; i++)
+        if (!a[i].t)
+            a[i].t = cnt--;
+    cdq(1, n);
+    for (int i = 1; i <= n; i++)
+        ans[i] = ans[i - 1] + rs[i] + lb[i];
+    for (int i = n; i >= n - m + 1; i--)
+        std::cout << ans[i] << '\n';
     return 0;
+}
+
+void add(int x, int d) {
+    for (int i = x; i <= n; i += lowbit(i))
+        c[i] += d;
+}
+
+int sum(int x) {
+    int ret = 0;
+    for (int i = x; i > 0; i -= lowbit(i))
+        ret += c[i];
+    return ret;
+}
+
+void cdq(int l, int r) {
+    if (l >= r)
+        return;
+    int mid = (l + r) >> 1;
+    int l1 = l, l2 = mid + 1;
+    for (int i = l; i <= r; i++)
+        if (a[i].t <= mid)
+            tmp[l1++] = a[i];
+        else
+            tmp[l2++] = a[i];
+    for (int i = l; i <= r; i++)
+        a[i] = tmp[i];
+    l1 = l;
+    for (int i = mid + 1; i <= r; i++) {
+        while (l1 <= mid && tmp[l1].x < tmp[i].x)
+            add(tmp[l1++].y, 1);
+        lb[tmp[i].t] += (l1 - l) - sum(tmp[i].y);
+    }
+    for (int i = l; i <= l1 - 1; i++)
+        add(tmp[i].y, -1);
+    l1 = mid;
+    for (int i = r; i >= mid + 1; i--) {
+        while (l1 >= l && tmp[l1].x > tmp[i].x)
+            add(tmp[l1--].y, 1);
+        rs[tmp[i].t] += sum(tmp[i].y - 1);
+    }
+    for (int i = l1 + 1; i <= mid; i++)
+        add(tmp[i].y, -1);
+    cdq(l, mid), cdq(mid + 1, r);
 }
