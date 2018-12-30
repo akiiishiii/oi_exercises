@@ -2,59 +2,107 @@
 #include <iostream>
 #include <algorithm>
 
-#define MAX 100005
-#define MAXQ 30005
-using namespace std;
-struct edge {
-    int next, to;
-} a[MAX * 2];
+int const Maxn = 100010;
+int const Maxq = 30010;
+int n, m, tot = 0, cnt = 1, num = 0, all = 0;
+int head[Maxn], Next[Maxn << 1], ver[Maxn << 1];
+int root[Maxn * 5], val[Maxn], tmp[Maxn], poww[25];
+int prt[Maxn][25], depth[Maxn], in[Maxn], out[Maxn], frt[Maxn], rt[Maxn];
+
 struct question {
     int k, a, b;
-} q[MAXQ];
-struct segment {
-    int l, r, size;
-} tr[MAX * 400];
-int n, m, head[MAX], root[MAX * 5], val[MAX], tmp[MAX], tot = 0, cnt = 1,
-                                                        num = 0, poww[25];
-int prt[MAX][25], depth[MAX], in[MAX], out[MAX], all = 0, frt[MAX], rt[MAX];
-void add(int x, int y) {
-    a[++cnt].next = head[x];
-    a[cnt].to = y;
-    head[x] = cnt;
+} q[Maxq];
+
+struct segment_tree {
+    int l, r;
+    int size;
+} tree[Maxn * 400];
+
+inline void add(int x, int y) { ver[++cnt] = y, Next[cnt] = head[x], head[x] = cnt; }
+inline int lowbit(int x) { return x & (-x); }
+int insert(int x, int l, int r, int last, int op);
+void update(int pos, int x, int op);
+void dfs(int x, int p, int d);
+void st();
+int lca(int x, int y);
+void getr(int x, int y, int p, int g);
+int query(int l, int r, int k);
+bool ojbk(int k);
+
+int main(int argc, char const *argv[]) {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(NULL);
+    std::cin >> n >> m;
+    for (int i = 1; i <= n; i++)
+        std::cin >> val[i], tmp[++tot] = val[i];
+    for (int i = 1, x, y; i <= n - 1; i++)
+        std::cin >> x >> y, add(x, y), add(y, x);
+    for (int i = 1; i <= m; i++) {
+        std::cin >> q[i].k >> q[i].a >> q[i].b;
+        if (!q[i].k)
+            tmp[++tot] = q[i].b;
+    }
+    std::sort(tmp + 1, tmp + tot + 1);
+    tot = std::unique(tmp + 1, tmp + tot + 1) - tmp - 1;
+    for (int i = 1; i <= n; i++)
+        val[i] = std::lower_bound(tmp + 1, tmp + tot + 1, val[i]) - tmp;
+    dfs(1, 0, 1);
+    st();
+    for (int i = 1; i <= m; i++) {
+        if (!q[i].k) {
+            int now = q[i].a;
+            update(val[now], in[now], -1);
+            update(val[now], out[now] + 1, 1);
+            val[now] = std::lower_bound(tmp + 1, tmp + tot + 1, q[i].b) - tmp;
+            update(val[now], in[now], 1);
+            update(val[now], out[now] + 1, -1);
+        } else {
+            int p = lca(q[i].a, q[i].b), g = prt[p][0];
+            getr(q[i].a, q[i].b, p, g);
+            if (!ojbk(q[i].k))
+                std::cout << "invalid request!\n";
+            else
+                std::cout << tmp[query(1, tot, q[i].k)] << '\n';
+        }
+    }
+    return 0;
 }
-int lowbit(int x) { return x & (-x); }
+
 int insert(int x, int l, int r, int last, int op) {
     int c = ++all;
-    tr[c] = tr[last];
-    tr[c].size += op;
+    tree[c] = tree[last];
+    tree[c].size += op;
     if (l == r)
         return c;
-    int mid = (l + r) / 2;
+    int mid = (l + r) >> 1;
     if (x <= mid)
-        tr[c].l = insert(x, l, mid, tr[last].l, op);
+        tree[c].l = insert(x, l, mid, tree[last].l, op);
     else
-        tr[c].r = insert(x, mid + 1, r, tr[last].r, op);
+        tree[c].r = insert(x, mid + 1, r, tree[last].r, op);
     return c;
 }
+
 void update(int pos, int x, int op) {
     for (int i = x; i <= n; i += lowbit(i))
         root[i] = insert(pos, 1, tot, root[i], op);
 }
-void dfs(int x, int fa, int d) {
+
+void dfs(int x, int p, int d) {
     in[x] = ++num;
     depth[x] = d;
-    prt[x][0] = fa;
+    prt[x][0] = p;
     update(val[x], in[x], 1);
-    for (int i = head[x]; i; i = a[i].next) {
-        int t = a[i].to;
-        if (t == fa)
+    for (int i = head[x]; i; i = Next[i]) {
+        int t = ver[i];
+        if (t == p)
             continue;
         dfs(t, x, d + 1);
     }
     out[x] = num;
     update(val[x], out[x] + 1, -1);
 }
-void ST() {
+
+void st() {
     poww[0] = 1;
     for (int i = 1; i <= 20; i++)
         poww[i] = poww[i - 1] * 2;
@@ -63,9 +111,10 @@ void ST() {
             if (prt[i][j - 1])
                 prt[i][j] = prt[prt[i][j - 1]][j - 1];
 }
+
 int lca(int x, int y) {
     if (depth[x] < depth[y])
-        swap(x, y);
+        std::swap(x, y);
     int t = depth[x] - depth[y];
     for (int i = 0; poww[i] <= t; i++)
         if (t & poww[i])
@@ -77,84 +126,51 @@ int lca(int x, int y) {
             x = prt[x][i], y = prt[y][i];
     return prt[x][0];
 }
-void getroot(int x, int y, int fa, int gfa) {
+
+void getr(int x, int y, int p, int g) {
     rt[0] = frt[0] = 0;
-    for (int i = in [x]; i >= 1; i -= lowbit(i))
+    for (int i = in[x]; i >= 1; i -= lowbit(i))
         rt[++rt[0]] = root[i];
-    for (int i = in [y]; i >= 1; i -= lowbit(i))
+    for (int i = in[y]; i >= 1; i -= lowbit(i))
         rt[++rt[0]] = root[i];
-    for (int i = in [fa]; i >= 1; i -= lowbit(i))
+    for (int i = in[p]; i >= 1; i -= lowbit(i))
         frt[++frt[0]] = root[i];
-    for (int i = in [gfa]; i >= 1; i -= lowbit(i))
+    for (int i = in[g]; i >= 1; i -= lowbit(i))
         frt[++frt[0]] = root[i];
 }
-int ask(int l, int r, int k) {
+
+int query(int l, int r, int k) {
     if (l == r)
         return l;
-    int size1 = 0, size2 = 0, size, mid = (l + r) / 2;
+    int size1 = 0, size2 = 0, size, mid = (l + r) >> 1;
     for (int i = 1; i <= rt[0]; i++)
-        size1 += tr[tr[rt[i]].r].size;
+        size1 += tree[tree[rt[i]].r].size;
     for (int i = 1; i <= frt[0]; i++)
-        size2 += tr[tr[frt[i]].r].size;
+        size2 += tree[tree[frt[i]].r].size;
     size = size1 - size2;
     if (size < k) {
         for (int i = 1; i <= rt[0]; i++)
-            rt[i] = tr[rt[i]].l;
+            rt[i] = tree[rt[i]].l;
         for (int i = 1; i <= frt[0]; i++)
-            frt[i] = tr[frt[i]].l;
-        return ask(l, mid, k - size);
+            frt[i] = tree[frt[i]].l;
+        return query(l, mid, k - size);
     } else {
         for (int i = 1; i <= rt[0]; i++)
-            rt[i] = tr[rt[i]].r;
+            rt[i] = tree[rt[i]].r;
         for (int i = 1; i <= frt[0]; i++)
-            frt[i] = tr[frt[i]].r;
-        return ask(mid + 1, r, k);
+            frt[i] = tree[frt[i]].r;
+        return query(mid + 1, r, k);
     }
 }
-bool ok(int k) {
+
+bool ojbk(int k) {
     int size1 = 0, size2 = 0, size;
     for (int i = 1; i <= rt[0]; i++)
-        size1 += tr[rt[i]].size;
+        size1 += tree[rt[i]].size;
     for (int i = 1; i <= frt[0]; i++)
-        size2 += tr[frt[i]].size;
+        size2 += tree[frt[i]].size;
     size = size1 - size2;
     if (size < k)
         return false;
     return true;
-}
-int main() {
-    int x, y;
-    scanf("%d%d", &n, &m);
-    for (int i = 1; i <= n; i++)
-        scanf("%d", &val[i]), tmp[++tot] = val[i];
-    for (int i = 1; i <= n - 1; i++)
-        scanf("%d%d", &x, &y), add(x, y), add(y, x);
-    for (int i = 1; i <= m; i++) {
-        scanf("%d%d%d", &q[i].k, &q[i].a, &q[i].b);
-        if (q[i].k == 0)
-            tmp[++tot] = q[i].b;
-    }
-    sort(tmp + 1, tmp + tot + 1);
-    tot = unique(tmp + 1, tmp + tot + 1) - tmp - 1;
-    for (int i = 1; i <= n; i++)
-        val[i] = lower_bound(tmp + 1, tmp + tot + 1, val[i]) - tmp;
-    dfs(1, 0, 1);
-    ST();
-    for (int i = 1; i <= m; i++) {
-        if (q[i].k == 0) {
-            int now = q[i].a;
-            update(val[now], in[now], -1);
-            update(val[now], out[now] + 1, 1);
-            val[now] = lower_bound(tmp + 1, tmp + tot + 1, q[i].b) - tmp;
-            update(val[now], in[now], 1);
-            update(val[now], out[now] + 1, -1);
-        } else {
-            int fa = lca(q[i].a, q[i].b), gfa = prt[fa][0];
-            getroot(q[i].a, q[i].b, fa, gfa);
-            if (!ok(q[i].k))
-                printf("invalid request!\n");
-            else
-                printf("%d\n", tmp[ask(1, tot, q[i].k)]);
-        }
-    }
 }
