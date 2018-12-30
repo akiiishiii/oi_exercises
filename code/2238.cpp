@@ -3,9 +3,8 @@
 #include <iostream>
 #include <iomanip>
 #include <cmath>
-using namespace std;
 
-const int Maxn = 1000005;
+const int Maxn = 1000100;
 const int inf = 0x7fffffff / 2;
 const double eps = 1e-9;
 
@@ -19,7 +18,7 @@ double s;
 int st[Maxn];
 double f[Maxn];
 
-double getk(int a, int b) {
+double slope(int a, int b) {
     if (b == 0)
         return -inf;
     if (fabs(p[a].x - p[b].x) < eps)
@@ -29,12 +28,14 @@ double getk(int a, int b) {
 
 void cdq(int l, int r) {
     if (l == r) {
-        f[l] = max(f[l], f[l - 1]);
+        f[l] = std::max(f[l], f[l - 1]);
         p[l].y = f[l] / (p[l].a * p[l].rate + p[l].b);
         p[l].x = p[l].rate * p[l].y;
         return;
     }
-    int mid = (l + r) >> 1, j = 1, l1 = l, l2 = mid + 1;
+    int l1, l2, mid = (l + r) >> 1, j = 1;
+    l1 = l;
+    l2 = mid + 1;
     for (int i = l; i <= r; i++) {
         if (p[i].id <= mid)
             t[l1++] = p[i];
@@ -47,15 +48,15 @@ void cdq(int l, int r) {
     top = 0;
     for (int i = l; i <= mid; i++) {
         while (top > 1 &&
-               getk(st[top - 1], st[top]) < getk(st[top - 1], i) + eps)
+               slope(st[top - 1], st[top]) < slope(st[top - 1], i) + eps)
             top--;
         st[++top] = i;
     }
     st[++top] = 0;
     for (int i = mid + 1; i <= r; i++) {
-        while (j < top && getk(st[j], st[j + 1]) + eps > p[i].k)
+        while (j < top && slope(st[j], st[j + 1]) + eps > p[i].k)
             j++;
-        f[p[i].id] = max(f[p[i].id], p[st[j]].x * p[i].a + p[st[j]].y * p[i].b);
+        f[p[i].id] = std::max(f[p[i].id], p[st[j]].x * p[i].a + p[st[j]].y * p[i].b);
     }
     cdq(mid + 1, r);
     l1 = l;
@@ -74,16 +75,16 @@ void cdq(int l, int r) {
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    cin >> n >> f[0];
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(NULL);
+    std::cin >> n >> f[0];
     for (int i = 1; i <= n; i++) {
-        cin >> p[i].a >> p[i].b >> p[i].rate;
+        std::cin >> p[i].a >> p[i].b >> p[i].rate;
         p[i].k = -p[i].a / p[i].b;
         p[i].id = i;
     }
-    sort(p + 1, p + 1 + n);
+    std::sort(p + 1, p + 1 + n);
     cdq(1, n);
-    cout << fixed << setprecision(3) << f[n] << "\n";
+    std::cout << std::fixed << std::setprecision(3) << f[n] << "\n";
     return 0;
 }
