@@ -8,38 +8,15 @@ int n, m, num = 0, root[Maxn * 5];
 
 struct trie {
     int size, ch[2];
-} tr[Maxn * 50];
+} tree[Maxn * 50];
 
-int insert(int last, int x) {
-    int c = ++num, now = c, t;
-    for (int i = 25; i >= 0; i--) {
-        t = (x >> i) & 1;
-        tr[now] = tr[last];
-        tr[now].size++;
-        last = tr[last].ch[t];
-        tr[now].ch[t] = ++num;
-        now = tr[now].ch[t];
-    }
-    tr[now].size = tr[last].size + 1;
-    return c;
-}
-
-int query(int x, int y, int z) {
-    int ret = 0;
-    for (int i = 25; i >= 0; i--) {
-        int l = (z >> i) & 1, r = l ^ 1;
-        if (tr[tr[y].ch[r]].size - tr[tr[x].ch[r]].size > 0)
-            ret += (1 << i), y = tr[y].ch[r], x = tr[x].ch[r];
-        else
-            y = tr[y].ch[l], x = tr[x].ch[l];
-    }
-    return ret;
-}
+int insert(int last, int x);
+int query(int x, int y, int z);
 
 int main(int argc, char const *argv[]) {
     std::ios_base::sync_with_stdio(false);
     std::cin.tie(NULL);
-    char s[10];
+    std::string s;
     int all = 0;
     std::cin >> n >> m;
     n++;
@@ -61,4 +38,30 @@ int main(int argc, char const *argv[]) {
         }
     }
     return 0;
+}
+
+int insert(int last, int x) {
+    int c = ++num, now = c, t;
+    for (int i = 25; i >= 0; i--) {
+        t = (x >> i) & 1;
+        tree[now] = tree[last];
+        tree[now].size++;
+        last = tree[last].ch[t];
+        tree[now].ch[t] = ++num;
+        now = tree[now].ch[t];
+    }
+    tree[now].size = tree[last].size + 1;
+    return c;
+}
+
+int query(int x, int y, int z) {
+    int ret = 0;
+    for (int i = 25; i >= 0; i--) {
+        int l = (z >> i) & 1, r = l ^ 1;
+        if (tree[tree[y].ch[r]].size - tree[tree[x].ch[r]].size > 0)
+            ret += (1 << i), y = tree[y].ch[r], x = tree[x].ch[r];
+        else
+            y = tree[y].ch[l], x = tree[x].ch[l];
+    }
+    return ret;
 }
