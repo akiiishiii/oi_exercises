@@ -1,21 +1,35 @@
+// 2528_.cpp
 #include <cstring>
 #include <iostream>
 
-const int Maxn = 1005;
+int const Maxn = 1005;
+int const dx[] = {1, -1, 0, 0}, dy[] = {0, 0, -1, 1};
+int n, nx, ny, nh, nl, rest;
+int map[45][45], c1[45][45], c2[45][45], my[Maxn], f[Maxn][5], vst[Maxn];
 
-struct Node {
+struct node {
     int x, y;
 } ax[Maxn], ay[Maxn], ah[Maxn], al[Maxn];
 
-int n, nx, ny, nh, nl, rest, map[45][45] = {0}, c1[45][45] = {0};
-int c2[45][45] = {0}, my[Maxn], f[Maxn][5] = {0}, vst[Maxn];
-int const dx[] = {1, -1, 0, 0}, dy[] = {0, 0, -1, 1};
+bool dfs(int x);
 
-void BuildGraph() {
-    int i, j, tx, ty, k, y, x;
+int main(int argc, char const *argv[]) {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(NULL);
+    int p, x, y;
+    std::cin >> n >> p;
+    rest = n * n - p;
+    if (rest % 2) {
+        std::cout << "No\n";
+        return 0;
+    }
+    while (p--) {
+        std::cin >> x >> y;
+        map[x][y] = 1;
+    }
     nx = ny = 0;
-    for (i = 1; i <= n; i++)
-        for (j = 1; j <= n; j++)
+    for (int i = 1; i <= n; i++)
+        for (int j = 1; j <= n; j++)
             if (!map[i][j]) {
                 if ((i + j) % 2) {
                     nx++;
@@ -29,20 +43,55 @@ void BuildGraph() {
                     c2[i][j] = ny;
                 }
             }
-    for (x = 1; x <= nx; x++) {
-        i = ax[x].x;
-        j = ax[x].y;
-        for (k = 0; k < 4; k++) {
-            tx = i + dx[k];
-            ty = j + dy[k];
+    for (int x = 1; x <= nx; x++) {
+        int i = ax[x].x, j = ax[x].y;
+        for (int k = 0; k < 4; k++) {
+            int tx = i + dx[k], ty = j + dy[k];
             if (c2[tx][ty]) {
-                y = c2[tx][ty];
+                int y = c2[tx][ty];
                 f[x][++f[x][0]] = y;
             }
         }
     }
+    memset(my, 0, sizeof(my));
+    for (int i = 1; i <= nx; i++) {
+        memset(vst, 0, sizeof(vst));
+        if (dfs(i))
+            rest -= 2;
+    }
+    if (rest)
+        std::cout << "No\n";
+    else {
+        std::cout << "Yes\n";
+        nh = nl = 0;
+        for (int j = 1; j <= ny; j++) {
+            int i = my[j];
+            if (ax[i].x == ay[j].x - 1) {
+                nh++;
+                ah[nh] = ax[i];
+            }
+            if (ax[i].x == ay[j].x + 1) {
+                nh++;
+                ah[nh] = ay[j];
+            }
+            if (ax[i].y == ay[j].y + 1) {
+                nl++;
+                al[nl] = ay[j];
+            }
+            if (ax[i].y == ay[j].y - 1) {
+                nl++;
+                al[nl] = ax[i];
+            }
+        }
+        std::cout << nh << '\n';
+        for (int i = 1; i <= nh; i++)
+            std::cout << ah[i].x << " " << ah[i].y << '\n';
+        std::cout << nl << '\n';
+        for (int i = 1; i <= nl; i++)
+            std::cout << al[i].x << " " << al[i].y << '\n';
+    }
+    return 0;
 }
-
 
 bool dfs(int x) {
     for (int i = 1; i <= f[x][0]; i++) {
@@ -56,52 +105,4 @@ bool dfs(int x) {
         }
     }
     return false;
-}
-
-void Print() {
-    int i, j;
-    std::cout << "Yes\n";
-    nh = nl = 0;
-    for (j = 1; j <= ny; j++) {
-        i = my[j];
-        if (ax[i].x == ay[j].x - 1) {
-            nh++;
-            ah[nh] = ax[i];
-        }
-        if (ax[i].x == ay[j].x + 1) {
-            nh++;
-            ah[nh] = ay[j];
-        }
-        if (ax[i].y == ay[j].y + 1) {
-            nl++;
-            al[nl] = ay[j];
-        }
-        if (ax[i].y == ay[j].y - 1) {
-            nl++;
-            al[nl] = ax[i];
-        }
-    }
-    std::cout << nh << '\n';
-    for (i = 1; i <= nh; i++)
-        std::cout << ah[i].x << " " << ah[i].y << '\n';
-    std::cout << nl << '\n';
-    for (i = 1; i <= nl; i++)
-        std::cout << al[i].x << " " << al[i].y << '\n';
-}
-
-
-int main() {
-    if (Read()) {
-        memset(my, 0, sizeof(my));
-    for (int i = 1; i <= nx; i++) {
-        memset(vst, 0, sizeof(vst));
-        if (dfs(i))
-            rest -= 2;
-    }
-    if (rest)
-        std::cout << "No\n";
-    else
-        Print();
-    }
-    return 0;
 }
