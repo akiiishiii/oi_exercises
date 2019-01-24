@@ -12,7 +12,7 @@ bool vst[Maxn], g[Maxn][Maxn];
 std::priority_queue<std::pair<int, int>> p;
 
 bool dfs(int i);
-int hungary();
+bool hungary();
 
 int main(int argc, char const *argv[]) {
     std::ios_base::sync_with_stdio(false);
@@ -46,7 +46,7 @@ bool dfs(int i) {
     return false;
 }
 
-int hungary() {
+bool hungary() {
     int ans = 0;
     bool flag = false;
     for (int i = 1; i <= n; i++) {
@@ -55,7 +55,7 @@ int hungary() {
             ans++;
     }
     if (ans != n)
-        return 0;
+        return false;
     memcpy(rec, my, sizeof(my));
     for (int i = 1; i <= n; i++) {
         g[rec[i]][i] = false;
