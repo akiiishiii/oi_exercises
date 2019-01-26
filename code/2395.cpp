@@ -34,7 +34,7 @@ int main(int argc, char const *argv[]) {
 
 inline void add(int s, int t, int p) {
     ver[++tot] = t, edge[tot] = p, flow[tot] = 0, Next[tot] = head[s], head[s] = tot;
-    ver[++tot] = s, edge[tot] = 0, flow[tot] = 0 ,Next[tot] = head[t], head[t] = tot;
+    ver[++tot] = s, edge[tot] = 0, flow[tot] = 0, Next[tot] = head[t], head[t] = tot;
 }
 
 int dfs(int x, int maxf) {

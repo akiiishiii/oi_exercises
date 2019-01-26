@@ -1,121 +1,118 @@
 // 2732.cpp
-#include <cmath>
-#include <cstdio>
 #include <iostream>
-using namespace std;
-const int INF = 0x7fffffff / 3;
-struct WITCH {
+#include <cmath>
+
+struct Wizard {
     int x, y, r, t;
-} A[505];
-struct JL {
+} wiz[505];
+
+struct Fairy {
     int x, y;
-} B[505];
+} fai[505];
+
 struct Tree {
     int x, y, r;
-} C[505];
-struct front_star {
-    int ne, to, v, tmp;
-} a[100005];
-int h[100005] = {0}, cnt = 1, N, M, K, S, T, Gap[100005] = {0},
-    dis[100005] = {0};
-void Addedge(int x, int y, int v) {
-    a[++cnt].to = y;
-    a[cnt].v = a[cnt].tmp = v;
-    a[cnt].ne = h[x];
-    h[x] = cnt;
-    a[++cnt].to = x;
-    a[cnt].v = a[cnt].tmp = 0;
-    a[cnt].ne = h[y];
-    h[y] = cnt;
-}
-double dist(int x1, int y1, int x2, int y2) {
-    return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
-}
-bool Conflict(WITCH A, JL B, Tree C) {
-    double d1 = sqrt(dist(A.x, A.y, C.x, C.y) - C.r * C.r),
-           d2 = sqrt(dist(B.x, B.y, C.x, C.y) - C.r * C.r);
-    return d1 + d2 < sqrt(dist(A.x, A.y, B.x, B.y));
-}
-void Read() {
-    scanf("%d%d%d", &N, &M, &K);
-    int i, j, k, bj;
-    for (i = 1; i <= N; i++)
-        scanf("%d%d%d%d", &A[i].x, &A[i].y, &A[i].r, &A[i].t);
-    for (i = 1; i <= M; i++)
-        scanf("%d%d", &B[i].x, &B[i].y);
-    for (i = 1; i <= K; i++)
-        scanf("%d%d%d", &C[i].x, &C[i].y, &C[i].r);
-    for (i = 1; i <= N; i++) {
-        Addedge(0, i, INF);
-        for (j = 1; j <= M; j++) {
-            if (dist(A[i].x, A[i].y, B[j].x, B[j].y) > A[i].r * A[i].r)
+} tree[505];
+
+int head[500005], ver[500005], flow[500005], Next[500005], tmp[500005];
+int gap[500005], dis[500005] = {0};
+int tot = 1, n, m, k, s, t;
+
+void add(int x, int y, int v);
+inline double dist(int x1, int y1, int x2, int y2);
+inline bool conflict(Wizard w, Fairy f, Tree t);
+int dfs(int x, int maxf);
+int sap(int tot);
+
+int main(int argc, char const *argv[]) {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(NULL);
+    std::cin >> n >> m >> k;
+    for (int i = 1; i <= n; i++)
+        std::cin >> wiz[i].x >> wiz[i].y >> wiz[i].r >> wiz[i].t;
+    for (int i = 1; i <= m; i++)
+        std::cin >> fai[i].x >> fai[i].y;
+    for (int i = 1; i <= k; i++)
+        std::cin >> tree[i].x >> tree[i].y >> tree[i].r;
+    for (int i = 1; i <= n; i++) {
+        add(0, i, 1 << 30);
+        for (int j = 1; j <= m; j++) {
+            if (dist(wiz[i].x, wiz[i].y, fai[j].x, fai[j].y) > wiz[i].r * wiz[i].r)
                 continue;
-            bj = 0;
-            for (k = 1; k <= K; k++)
-                if (Conflict(A[i], B[j], C[k])) {
-                    bj = 1;
+            bool flag = false;
+            for (int l = 1; l <= k; l++)
+                if (conflict(wiz[i], fai[j], tree[l])) {
+                    flag = true;
                     break;
                 }
-            if (!bj) {
-                Addedge(i, j + N, 1);
+            if (!flag) {
+                add(i, j + n, 1);
             }
         }
     }
-    for (i = 1; i <= M; i++)
-        Addedge(i + N, M + N + 1, 1);
-    S = 0;
-    T = N + M + 1;
-    N = T + 1;
+    for (int i = 1; i <= m; i++)
+        add(i + n, m + n + 1, 1);
+    s = 0, t = n + m + 1, n = t + 1;
+    int l = 0, r = 500000;
+    while (l <= r) {
+        int mid = (l + r) >> 1;
+        if (sap(mid) == m)
+            r = mid - 1;
+        else
+            l = mid + 1;
+    }
+    if (l > 500000)
+        std::cout << "-1\n";
+    else
+        std::cout << l << '\n';
+    return 0;
 }
-int DFS(int x, int maxf) {
-    if (x == T)
+
+void add(int x, int y, int v) {
+    ver[++tot] = y, flow[tot] = tmp[tot] = v, Next[tot] = head[x], head[x] = tot;
+    ver[++tot] = x, flow[tot] = tmp[tot] = 0, Next[tot] = head[y], head[y] = tot;
+}
+
+inline double dist(int x1, int y1, int x2, int y2) {
+    return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
+}
+
+inline bool conflict(Wizard w, Fairy f, Tree t) {
+    return sqrt(dist(w.x, w.y, t.x, t.y) - t.r * t.r) + sqrt(dist(f.x, f.y, t.x, t.y) - t.r * t.r) < sqrt(dist(w.x, w.y, f.x, f.y));
+}
+
+int dfs(int x, int maxf) {
+    if (x == t)
         return maxf;
     int y, k, ret = 0, dlt;
-    for (k = h[x]; k; k = a[k].ne) {
-        y = a[k].to;
-        if (a[k].v && dis[x] == dis[y] + 1) {
-            dlt = DFS(y, min(maxf, a[k].v));
-            a[k].v -= dlt;
-            a[k ^ 1].v += dlt;
+    for (k = head[x]; k; k = Next[k]) {
+        y = ver[k];
+        if (flow[k] && dis[x] == dis[y] + 1) {
+            dlt = dfs(y, std::min(maxf, flow[k]));
+            flow[k] -= dlt;
+            flow[k ^ 1] += dlt;
             maxf -= dlt;
             ret += dlt;
-            if (maxf == 0 || dis[S] == N)
+            if (!maxf || dis[s] == n)
                 return ret;
         }
     }
-    if (!(--Gap[dis[x]]))
-        dis[S] = N;
-    Gap[++dis[x]]++;
+    if (!(--gap[dis[x]]))
+        dis[s] = n;
+    gap[++dis[x]]++;
     return ret;
 }
-int Sap(int tot) {
-    int i, k, ans = 0;
-    for (i = 0; i <= N; i++)
-        Gap[i] = dis[i] = 0;
-    for (i = 2; i <= cnt; i++)
-        a[i].v = a[i].tmp;
-    for (k = h[0]; k; k = a[k].ne)
-        a[k].v = tot / A[a[k].to].t + 1;
-    Gap[0] = N;
-    while (dis[S] < N)
-        ans += DFS(S, INF);
+
+int sap(int tot) {
+    int ans = 0;
+    for (int i = 0; i <= n; i++)
+        gap[i] = dis[i] = 0;
+    for (int i = 2; i <= tot; i++)
+        flow[i] = tmp[i];
+    for (int k = head[0]; k; k = Next[k])
+        flow[k] = tot / wiz[ver[k]].t + 1;
+    gap[0] = n;
+    while (dis[s] < n)
+        ans += dfs(s, 1 << 30);
     return ans;
-}
-int Binary() {
-    int L = 0, R = 500000, mid;
-    while (L <= R) {
-        mid = (L + R) / 2;
-        if (Sap(mid) == M)
-            R = mid - 1;
-        else
-            L = mid + 1;
-    }
-    if (L > 500000)
-        return -1;
-    return L;
-}
-int main() {
-    Read();
-    printf("%d", Binary());
-    return 0;
 }
