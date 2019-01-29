@@ -1,43 +1,49 @@
 // 5224.cpp
-#include <iostream>
-#include <string>
 #include <cstring>
+#include <iostream>
 
-int p[110010];
+char s[110010];
+char s_new[220020];
+int p[220020];
 
-int manacher(std::string t);
+int init();
+int manacher();
 
 int main(int argc, char const *argv[]) {
-    std::string s;
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(NULL);
     while (std::cin >> s)
-        std::cout << manacher(s) << '\n';
+        std::cout << manacher() << '\n';
     return 0;
 }
 
-int manacher(std::string t) {
-    std::string s;
-    s.resize(t.length() * 3);
-    memset(p, 0, sizeof p);
-    int ans = -1, len = 0;
-    s[len] = '$';
-    for (int i = 0; i < t.length(); i++) {
-        s[++len] = '#';
-        s[++len] = t[i];
+int init() {
+    int len = strlen(s);
+    s_new[0] = '$';
+    s_new[1] = '#';
+    int j = 2;
+    for (int i = 0; i < len; i++) {
+        s_new[j++] = s[i];
+        s_new[j++] = '#';
     }
-    s[++len] = '#';
-    s[++len] = '\0';
-    for (int i = 1, k = 0, mx = 0; i < len; i++) {
-        if (mx > i)
-            p[i] = std::min(p[k * 2 - i], mx - i);
+    s_new[j] = '\0';
+    return j;
+}
+
+int manacher() {
+    int len = init(), max_len = -1, id, mx = 0;
+    for (int i = 1; i < len; i++) {
+        if (i < mx)
+            p[i] = std::min(p[2 * id - i], mx - i);
         else
             p[i] = 1;
-        while (s[i + p[i]] == s[i - p[i]])
+        while (s_new[i - p[i]] == s_new[i + p[i]])
             p[i]++;
-        if (p[i] + i > mx) {
-            mx = p[i] + i;
-            k = i;
+        if (mx < i + p[i]) {
+            id = i;
+            mx = i + p[i];
         }
-        ans = std::max(ans, p[i] - 1);
+        max_len = std::max(max_len, p[i] - 1);
     }
-    return ans;
+    return max_len;
 }
