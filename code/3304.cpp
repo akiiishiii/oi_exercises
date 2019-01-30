@@ -1,39 +1,38 @@
 // 3304.cpp
 #include <iostream>
-using namespace std;
+#include <string>
 
-int const Maxn = 10000005;
-char s[Maxn], a[Maxn];
-int p[Maxn] = {0};
+std::string ss, s;
+int len, p[1000005], mx, id, ans, n, pp[1000005];
 
 int main(int argc, char const *argv[]) {
     std::ios_base::sync_with_stdio(false);
     std::cin.tie(NULL);
-    int len, n = 0, mx, id, ans = 0;
-    std::cin >> len >> a;
-    s[0] = '$';
-    for (int i = 0; i < len; ++i)
-        s[++n] = '#', s[++n] = a[i];
-    for (int i = 1; i <= n; ++i) {
+    std::cin >> n >> ss;
+    ans = len = 0;
+    s += '*';
+    for (int i = 0; i < n; i++)
+        s += '#', s += ss[i];
+    s += '#';
+    len = s.length();
+    mx = id = 0;
+    for (int i = 1; i < len; i++) {
         if (mx > i)
-            p[i] = std::min(p[2 * id - i], mx - i);
+            p[i] = std::min(p[id * 2 - i], mx - i);
         else
             p[i] = 1;
-        while (s[i - p[i]] == s[i + p[i]])
-            ++p[i];
-        if (i + p[i] > mx) {
-            mx = i + p[i];
-            id = i;
-        }
+        while (s[i + p[i]] == s[i - p[i]])
+            p[i]++;
+        if (p[i] + i > mx)
+            mx = p[i] + i, id = i;
     }
-    for (int i = 1; i <= n; i += 2) {
-        int l = (i - p[i] + 1 + i) / 2;
-        if (!(l % 2))
-            ++l;
-        while (l <= i && l + p[l] < i)
-            l += 2;
-        ans = std::max(ans, ((i - l) / 2) * 4);
+    for (int i = 1; i <= n; i++)
+        pp[i] = (p[i * 2 + 1] - 1) / 2;
+    for (int i = 1; i <= n; i++) {
+        for (int j = pp[i] / 2; j >= 1 && j > ans; j--)
+            if (pp[i - j] >= j && pp[i + j] >= j)
+                ans = std::max(ans, j);
     }
-    std::cout << ans << '\n';
+    std::cout << ans * 4 << '\n';
     return 0;
 }
