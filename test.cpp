@@ -1,70 +1,60 @@
-#include <algorithm>
-#include <cstdio>
-#include <iostream>
+#include<iostream>
+#include<cstring>
+#include<cstdio>
 using namespace std;
-
-struct treee {
-    int a, b, h;
-} tree[80000 * 4 + 1], a[80000 * 4 + 1];
-int b[80000 * 4 + 1];
-long long ans;
-
-bool cmp(const treee &a, const treee &b) { return a.h < b.h; }
-void build(int v, int l, int r) {
-    tree[v].a = l;
-    tree[v].b = r;
-    tree[v].h = 0;
-    if (l == r)
-        return;
-    int mid = (l + r) >> 1;
-    build(v << 1, l, mid);
-    build((v << 1) + 1, mid + 1, r);
+const int maxn=0x7fffffff/2;
+int map[205][205],tmp[205][205],dis[205],GAP[205];
+int n,m,S,T;
+void Read()//读入数据，建立图
+{  int i,x,y;
+   scanf("%d%d%d%d",&n,&m,&S,&T);S=S+n;
+   for(i=1;i<=m;i++)
+   {  scanf("%d%d",&x,&y);
+      map[x][x+n]=1;map[y][y+n]=1;
+	  map[x+n][y]=maxn;map[y+n][x]=maxn;
+   }
+   memcpy(tmp,map,sizeof(map));
 }
-void insert(int v, int l, int r, int x) {
-    if (l > tree[v].b || r < tree[v].a)
-        return;
-    if (l <= tree[v].a && r >= tree[v].b) {
-        tree[v].h = x;
-        return;
-    }
-    if (tree[v].h > 0) {
-        tree[v << 1].h = tree[(v << 1) + 1].h = tree[v].h;
-        tree[v].h = -1;
-    } //标记下传
-    insert(v << 1, l, r, x);
-    insert((v << 1) + 1, l, r, x);
-    if (tree[v << 1].h == tree[(v << 1) + 1].h)
-        tree[v].h = tree[v << 1].h; //标记上传,合并
+int DFS(int v,int maxflow)
+{  if(v==T)return maxflow;
+   int tmp=0;
+   for(int i=1;i<=n*2;i++)
+      if(map[v][i] && dis[i]+1==dis[v])
+      {  int dlt=DFS(i,min(maxflow,map[v][i]));
+         tmp += dlt;maxflow-=dlt;
+         map[v][i] -= dlt;
+         map[i][v] += dlt;
+         if(dis[S]==n*2||!maxflow)return tmp;
+      }
+   if(--GAP[dis[v]]==0)dis[S]=n*2;
+   GAP[++dis[v]]++;
+   return tmp;
 }
-void calc(int v) {
-    if (tree[v].h > 0) {
-        ans += tree[v].h * (long long)(b[tree[v].b + 1] - b[tree[v].a]);
-        return;
-    }
-    if (tree[v].a == tree[v].b)
-        return;
-    calc(v << 1);
-    calc((v << 1) + 1);
+int SAP()
+{  int Ans=0;
+   memset(dis,0,sizeof(dis));
+   memset(GAP,0,sizeof(GAP));
+   GAP[0]=n*2;
+   while(dis[S]<n*2)Ans+=DFS(S,1<<30);
+   return Ans;
 }
-int main() {
-    int n, tot;
-    scanf("%d", &n);
-    for (int i = 1; i <= n; i++) {
-        scanf("%d%d%d", &a[i].a, &a[i].b, &a[i].h);
-        b[i] = a[i].a;
-        b[i + n] = a[i].b;
-    }
-    sort(b + 1, b + (n << 1) + 1);
-    tot = unique(b + 1, b + (n << 1) + 1) - b - 1;
-    build(1, 1, tot);
-    for (int i = 1; i <= n; i++) {
-        a[i].a = lower_bound(b + 1, b + tot + 1, a[i].a) - b;
-        a[i].b = lower_bound(b + 1, b + tot + 1, a[i].b) - b;
-    } //离散化
-    sort(a + 1, a + n + 1, cmp);
-    for (int i = 1; i <= n; i++)
-        insert(1, a[i].a, a[i].b - 1, a[i].h); //记住转点
-    calc(1);
-    printf("%lld", ans);
-    return 0;
+void Solve()
+{  int i,flow;
+   flow=SAP();//求最大流
+   printf("%d\n",flow);
+   for(i=1;i<=n;i++)//枚举断点
+     if(map[i][i+n]==0)//边满流，则可能是最小割的边
+     {  memcpy(map,tmp,sizeof(tmp));
+        map[i][i+n]=0;//断边
+        if(flow==SAP()+1)//满足要求，则i为要求的点
+        {  printf("%d ",i);
+		   tmp[i][i+n]=0;//真正断掉
+		   flow--;if(flow==0)break;
+	    }
+     }
+}
+int main()
+{  Read();
+   Solve();
+   return 0;
 }
