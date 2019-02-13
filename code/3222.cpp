@@ -1,20 +1,18 @@
-// 3661.cpp
+// 3222.cpp
+#include <cmath>
 #include <cstring>
 #include <iostream>
+#include <queue>
+double const eps = 1e-9;
 
-double eps = 0.0000005;
-int head[405], ver[4005], Next[4005], tot = 1;
-double flow[4005];
-int dis[405], gap[405], ans[405];
-bool vis[405];
 int n, m, s, t, cnt = 0;
+int x[1005], y[1005], deg[1005];
+bool vst[1005];
+int dis[1005], gap[1005];
+int head[1005], ver[100005], Next[100005], tot = 1;
+double flow[100005];
 
-struct edge {
-    int x, y;
-    double z;
-} e[405];
-
-inline void add(int s, int t, int p);
+inline void add(int s, int t, double p);
 double dfs(int x, double maxf);
 double sap();
 double chk(double mid);
@@ -24,31 +22,33 @@ int main(int argc, char const *argv[]) {
     std::ios_base::sync_with_stdio(false);
     std::cin.tie(NULL);
     std::cin >> n >> m;
-    double l = 0.0, r = 0.0, mid;
+    if (!m) {
+        std::cout << "1\n";
+        return 0;
+    }
+    double l = 0, r = m, mid;
+    s = n + 1, t = n + 2;
     for (int i = 1; i <= m; i++)
-        std::cin >> e[i].x >> e[i].y >> e[i].z, r += e[i].z;
-    s = 1, t = n;
-    while (r - l > eps) {
+        std::cin >> x[i] >> y[i], deg[x[i]]++, deg[y[i]]++;
+    while (r - l > 1.0 / n / n) {
         mid = (l + r) / 2.0;
-        if (chk(mid) > eps)
+        double ans = chk(mid);
+        ans = (double(m) * double(n) - ans) / 2.0;
+        if (ans > eps)
             l = mid;
         else
             r = mid;
     }
-    chk(mid);
+    chk(l);
     dfs(s);
-    for (int i = 1; i <= m; i++) {
-        if (e[i].z < mid || vis[e[i].x] != vis[e[i].y])
-            ans[++cnt] = i;
-    }
+    for (int i = 1; i <= n; i++)
+        if (vst[i])
+            cnt++;
     std::cout << cnt << '\n';
-    for (int i = 1; i <= cnt; i++)
-        std::cout << ans[i] << ' ';
-    std::cout << '\n';
     return 0;
 }
 
-inline void add(int s, int t, int p) {
+inline void add(int s, int t, double p) {
     ver[++tot] = t, flow[tot] = p, Next[tot] = head[s], head[s] = tot;
     ver[++tot] = s, flow[tot] = 0.0, Next[tot] = head[t], head[t] = tot;
 }
@@ -65,50 +65,44 @@ double dfs(int x, double maxf) {
             maxf -= dlt;
             flow[i] -= dlt;
             flow[i ^ 1] += dlt;
-            if (dis[s] == n || !maxf)
+            if (!maxf || dis[s] == n + 2)
                 return ans;
         }
     }
     gap[dis[x]]--;
     if (!gap[dis[x]])
-        dis[s] = n;
+        dis[s] = n + 2;
     gap[++dis[x]]++;
     return ans;
 }
 
 double sap() {
+    gap[0] = n + 2;
     double ans = 0;
-    gap[0] = n;
-    while (dis[s] < n)
+    while (dis[s] < n + 2)
         ans += dfs(s, 0x3f3f3f3f);
     return ans;
 }
 
-double chk(double d) {
-    double ans = 0.0;
-    memset(ver, 0, sizeof(ver));
-    memset(Next, 0, sizeof(Next));
-    memset(flow, 0, sizeof(flow));
+double chk(double mid) {
+    double ans;
     memset(head, 0, sizeof(head));
     memset(gap, 0, sizeof(gap));
     memset(dis, 0, sizeof(dis));
     tot = 1;
-    for (int i = 1; i <= m; i++) {
-        if (e[i].z <= d)
-            ans += e[i].z - d;
-        else {
-            add(e[i].x, e[i].y, e[i].z - d);
-            add(e[i].y, e[i].x, e[i].z - d);
-        }
-    }
-    return ans + sap();
+    for (int i = 1; i <= m; i++)
+        add(x[i], y[i], 1.0), add(y[i], x[i], 1.0);
+    for (int i = 1; i <= n; i++)
+        add(s, i, double(m)), add(i, t, double(m) + 2 * mid - double(deg[i]));
+    ans = sap();
+    return ans;
 }
 
 void dfs(int x) {
-    vis[x] = true;
+    vst[x] = true;
     for (int i = head[x]; i; i = Next[i]) {
         int y = ver[i];
-        if (flow[i] > eps && !vis[y])
+        if (flow[i] > eps && !vst[y])
             dfs(y);
     }
 }

@@ -1,60 +1,121 @@
 #include<iostream>
-#include<cstring>
+#include<algorithm>
 #include<cstdio>
+#include<cstring>
+#include<iomanip>
+#include<cmath>
+#include<cstdlib>
+#include<queue>
+#include<stack>
+#include<vector>
+#define JD 0.0000005
 using namespace std;
-const int maxn=0x7fffffff/2;
-int map[205][205],tmp[205][205],dis[205],GAP[205];
-int n,m,S,T;
-void Read()//读入数据，建立图
-{  int i,x,y;
-   scanf("%d%d%d%d",&n,&m,&S,&T);S=S+n;
-   for(i=1;i<=m;i++)
-   {  scanf("%d%d",&x,&y);
-      map[x][x+n]=1;map[y][y+n]=1;
-	  map[x+n][y]=maxn;map[y+n][x]=maxn;
-   }
-   memcpy(tmp,map,sizeof(map));
+int n,m,d[405],gap[405],head[405],cnt,S,T,vst[405],num=0,ANS[405];
+//double
+struct bianji{
+	int x,y;
+	double z;
+}b[405];
+struct edge{
+	int next,to;
+	double flow;
+}a[4005];
+void add(int x,int y,double z)
+{
+	a[++cnt].next=head[x];
+	a[cnt].to=y;
+	a[cnt].flow=z;
+	head[x]=cnt;
+	a[++cnt].next=head[y];
+	a[cnt].to=x;
+	a[cnt].flow=0.0;
+	head[y]=cnt;
 }
-int DFS(int v,int maxflow)
-{  if(v==T)return maxflow;
-   int tmp=0;
-   for(int i=1;i<=n*2;i++)
-      if(map[v][i] && dis[i]+1==dis[v])
-      {  int dlt=DFS(i,min(maxflow,map[v][i]));
-         tmp += dlt;maxflow-=dlt;
-         map[v][i] -= dlt;
-         map[i][v] += dlt;
-         if(dis[S]==n*2||!maxflow)return tmp;
-      }
-   if(--GAP[dis[v]]==0)dis[S]=n*2;
-   GAP[++dis[v]]++;
-   return tmp;
+double dfs(int x,double maxf,int to)
+{
+	if(x==to)return maxf;
+	double ans=0,dlt;
+	for(int i=head[x];i;i=a[i].next)
+	{
+		int t=a[i].to;
+		if(a[i].flow&&d[x]==d[t]+1)
+		{
+			dlt=dfs(t,min(maxf,a[i].flow),to);
+			ans+=dlt;
+			maxf-=dlt;
+			a[i].flow-=dlt;
+			a[i^1].flow+=dlt;
+			if(!maxf||d[S]==n)return ans;
+		}
+	}
+	gap[d[x]]--;
+	if(!gap[d[x]])d[S]=n;
+	gap[++d[x]]++;
+//	cout<<ans<<"\n";
+	return ans;
 }
-int SAP()
-{  int Ans=0;
-   memset(dis,0,sizeof(dis));
-   memset(GAP,0,sizeof(GAP));
-   GAP[0]=n*2;
-   while(dis[S]<n*2)Ans+=DFS(S,1<<30);
-   return Ans;
+double sap(int st,int to)
+{
+	gap[0]=n;
+	double ans=0;
+	while(d[st]<n)ans+=dfs(st,0x3f3f3f,to);
+//	cout<<ans<<"\n";
+	return ans;
 }
-void Solve()
-{  int i,flow;
-   flow=SAP();//求最大流
-   printf("%d\n",flow);
-   for(i=1;i<=n;i++)//枚举断点
-     if(map[i][i+n]==0)//边满流，则可能是最小割的边
-     {  memcpy(map,tmp,sizeof(tmp));
-        map[i][i+n]=0;//断边
-        if(flow==SAP()+1)//满足要求，则i为要求的点
-        {  printf("%d ",i);
-		   tmp[i][i+n]=0;//真正断掉
-		   flow--;if(flow==0)break;
-	    }
-     }
+double ojbk(double mid)
+{
+	double ans=0.0;
+	memset(a,0,sizeof(a));
+	memset(head,0,sizeof(head));
+	memset(gap,0,sizeof(gap));
+	memset(d,0,sizeof(d));
+	cnt=1;
+	for(int i=1;i<=m;i++)
+	{
+		if(b[i].z<=mid)
+			ans+=b[i].z-mid;
+		else
+		{
+			add(b[i].x,b[i].y,b[i].z-mid);
+			add(b[i].y,b[i].x,b[i].z-mid);
+		}
+	}
+//	cout<<ans<<"\n";
+	return ans+sap(S,T);
 }
+void DFS(int x)
+{
+	vst[x]=1;
+	for(int i=head[x];i;i=a[i].next)
+	{
+		int t=a[i].to;
+		if(a[i].flow>JD&&!vst[t])
+			DFS(t);
+	}
+}
+
 int main()
-{  Read();
-   Solve();
-   return 0;
+{
+	scanf("%d%d",&n,&m);
+	double l=0.0,r=0.0,mid;
+	for(int i=1;i<=m;i++)
+		scanf("%d%d%lf",&b[i].x,&b[i].y,&b[i].z),r+=b[i].z;
+	S=1;T=n;
+	while(r-l>JD)
+	{
+		mid=(l+r)/2.0;
+		if(ojbk(mid)>JD)l=mid;
+		else r=mid;
+	}
+	ojbk(mid);
+	DFS(S);
+	for(int i=1;i<=m;i++)
+	{
+		if(b[i].z<mid||vst[b[i].x]!=vst[b[i].y])
+			ANS[++num]=i;
+	}
+	printf("%d\n",num);
+	for(int i=1;i<=num;i++)
+		printf("%d ",ANS[i]);
+	return 0;
 }
