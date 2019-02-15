@@ -13,43 +13,9 @@ struct edge {
     bool d;
 } e[Maxm];
 
-inline void add(int x, int y, int z) {
-    ver[++tot] = y, flow[tot] = z, Next[tot] = head[x], head[x] = tot;
-    ver[++tot] = x, flow[tot] = 0, Next[tot] = head[y], head[y] = tot;
-}
-
-int dfs(int x, int maxf, int y) {
-    if (x == y)
-        return maxf;
-    int ans = 0, dlt;
-    for (int i = head[x]; i; i = Next[i]) {
-        int y = ver[i];
-        if (flow[i] && d[y] + 1 == d[x]) {
-            dlt = dfs(y, std::min(maxf, flow[i]), y);
-            ans += dlt;
-            maxf -= dlt;
-            flow[i] -= dlt;
-            flow[i ^ 1] += dlt;
-            if (!maxf || d[s] == num)
-                return ans;
-        }
-    }
-    gap[d[x]]--;
-    if (!gap[d[x]])
-        d[s] = num;
-    gap[++d[x]]++;
-    return ans;
-}
-
-int sap(int x, int y) {
-    memset(d, 0, sizeof(d));
-    memset(gap, 0, sizeof(gap));
-    gap[0] = num;
-    int ans = 0;
-    while (d[x] < num)
-        ans += dfs(x, 0x3f3f3f3f, y);
-    return ans;
-}
+inline void add(int x, int y, int z);
+int dfs(int x, int maxf, int t);
+int sap(int x, int y);
 
 int main(int argc, char const *argv[]) {
     std::ios_base::sync_with_stdio(false);
@@ -84,9 +50,47 @@ int main(int argc, char const *argv[]) {
             else
                 add(s, i, dlt), sum += dlt;
         }
-        if (flag && sap(s, t) != sum)
+        if (sap(s, t) != sum)
             flag = false;
         std::cout << (flag ? "possible" : "impossible") << '\n';
     }
     return 0;
+}
+
+inline void add(int x, int y, int z) {
+    ver[++tot] = y, flow[tot] = z, Next[tot] = head[x], head[x] = tot;
+    ver[++tot] = x, flow[tot] = 0, Next[tot] = head[y], head[y] = tot;
+}
+
+int dfs(int x, int maxf, int t) {
+    if (x == t)
+        return maxf;
+    int ans = 0, dlt;
+    for (int i = head[x]; i; i = Next[i]) {
+        int y = ver[i];
+        if (flow[i] && d[y] + 1 == d[x]) {
+            dlt = dfs(y, std::min(maxf, flow[i]), t);
+            ans += dlt;
+            maxf -= dlt;
+            flow[i] -= dlt;
+            flow[i ^ 1] += dlt;
+            if (!maxf || d[s] == num)
+                return ans;
+        }
+    }
+    gap[d[x]]--;
+    if (!gap[d[x]])
+        d[s] = num;
+    gap[++d[x]]++;
+    return ans;
+}
+
+int sap(int x, int y) {
+    memset(d, 0, sizeof(d));
+    memset(gap, 0, sizeof(gap));
+    gap[0] = num;
+    int ans = 0;
+    while (d[x] < num)
+        ans += dfs(x, 0x3f3f3f3f, y);
+    return ans;
 }
