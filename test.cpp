@@ -1,121 +1,116 @@
-#include<iostream>
-#include<algorithm>
-#include<cstdio>
-#include<cstring>
-#include<iomanip>
-#include<cmath>
-#include<cstdlib>
-#include<queue>
-#include<stack>
-#include<vector>
-#define JD 0.0000005
+#include <algorithm>
+#include <cmath>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <iomanip>
+#include <iostream>
+#include <queue>
+#include <stack>
+#include <vector>
+#define MAX 100005
+#define INF 0x3f3f3f3f3f
 using namespace std;
-int n,m,d[405],gap[405],head[405],cnt,S,T,vst[405],num=0,ANS[405];
-//double
-struct bianji{
-	int x,y;
-	double z;
-}b[405];
-struct edge{
-	int next,to;
-	double flow;
-}a[4005];
-void add(int x,int y,double z)
-{
-	a[++cnt].next=head[x];
-	a[cnt].to=y;
-	a[cnt].flow=z;
-	head[x]=cnt;
-	a[++cnt].next=head[y];
-	a[cnt].to=x;
-	a[cnt].flow=0.0;
-	head[y]=cnt;
+int n, L, P, point, a;
+long double f[MAX], s[MAX];
+char str[MAX];
+struct node {
+    int l, r, p;
+};
+deque<node> q;
+// inline char nc()
+//{
+//	static char buf[100000],*p1=buf,*p2=buf;
+//	return p1==p2&&(p2=(p1=buf)+fread(buf,1,100000,stdin),p1==p2)?EOF:*p1++;
+//}
+inline char nc() { return getchar(); }
+inline long long read() {
+    char t;
+    long long u = 0, k = 1;
+    t = nc();
+    while (t < '0' || t > '9') {
+        if (t == '-')
+            k = -1;
+        t = nc();
+    }
+    while (t >= '0' && t <= '9') {
+        u = u * 10 + t - '0';
+        t = nc();
+    }
+    return u * k;
 }
-double dfs(int x,double maxf,int to)
-{
-	if(x==to)return maxf;
-	double ans=0,dlt;
-	for(int i=head[x];i;i=a[i].next)
-	{
-		int t=a[i].to;
-		if(a[i].flow&&d[x]==d[t]+1)
-		{
-			dlt=dfs(t,min(maxf,a[i].flow),to);
-			ans+=dlt;
-			maxf-=dlt;
-			a[i].flow-=dlt;
-			a[i^1].flow+=dlt;
-			if(!maxf||d[S]==n)return ans;
-		}
-	}
-	gap[d[x]]--;
-	if(!gap[d[x]])d[S]=n;
-	gap[++d[x]]++;
-//	cout<<ans<<"\n";
-	return ans;
+long double Abs(long double x) { return x > 0 ? x : -x; }
+long double quick_power(long double x, int y) {
+    long double re = 1;
+    while (y) {
+        if (y & 1)
+            re = re * x;
+        x = x * x;
+        y >>= 1;
+    }
+    return re;
 }
-double sap(int st,int to)
-{
-	gap[0]=n;
-	double ans=0;
-	while(d[st]<n)ans+=dfs(st,0x3f3f3f,to);
-//	cout<<ans<<"\n";
-	return ans;
+long double get(int l, int r) {
+    return f[l] +
+           quick_power(Abs((long double)(s[r] - s[l] + (r - l - 1) - L)), P);
 }
-double ojbk(double mid)
-{
-	double ans=0.0;
-	memset(a,0,sizeof(a));
-	memset(head,0,sizeof(head));
-	memset(gap,0,sizeof(gap));
-	memset(d,0,sizeof(d));
-	cnt=1;
-	for(int i=1;i<=m;i++)
-	{
-		if(b[i].z<=mid)
-			ans+=b[i].z-mid;
-		else
-		{
-			add(b[i].x,b[i].y,b[i].z-mid);
-			add(b[i].y,b[i].x,b[i].z-mid);
-		}
-	}
-//	cout<<ans<<"\n";
-	return ans+sap(S,T);
+long double find(node x, int y) {
+    int l = x.l, r = x.r, mid;
+    while (l <= r) {
+        mid = (l + r) / 2;
+        if (get(x.p, mid) < get(y, mid))
+            l = mid + 1;
+        else
+            r = mid - 1;
+    }
+    return l;
 }
-void DFS(int x)
-{
-	vst[x]=1;
-	for(int i=head[x];i;i=a[i].next)
-	{
-		int t=a[i].to;
-		if(a[i].flow>JD&&!vst[t])
-			DFS(t);
-	}
-}
-
-int main()
-{
-	scanf("%d%d",&n,&m);
-	double l=0.0,r=0.0,mid;
-	for(int i=1;i<=m;i++)
-		scanf("%d%d%lf",&b[i].x,&b[i].y,&b[i].z),r+=b[i].z;
-	S=1;T=n;
-	while(r-l>JD)
-	{
-		mid=(l+r)/2.0;
-		if(ojbk(mid)>JD)l=mid;
-		else r=mid;
-	}
-	ojbk(mid);
-	DFS(S);
-	for(int i=1;i<=m;i++)
-	{
-		if(b[i].z<mid||vst[b[i].x]!=vst[b[i].y])
-			ANS[++num]=i;
-	}
-	printf("%d\n",num);
-	for(int i=1;i<=num;i++)
-		printf("%d ",ANS[i]);
-	return 0;
+int main() {
+    int T;
+    T = read();
+    while (T--) {
+        while (q.size())
+            q.pop_back();
+        n = read();
+        L = read();
+        P = read();
+        point = 0;
+        for (int i = 1; i <= n; i++)
+            scanf("%s", str), a = strlen(str), s[i] = s[i - 1] + a;
+        node st;
+        st.l = 0;
+        st.p = 0;
+        st.r = n;
+        q.push_back(st);
+        for (int i = 1; i <= n; i++) {
+            if (q.size() && i > q.front().r)
+                q.pop_front();
+            f[i] = get(q.front().p, i);
+            if (q.empty() || get(i, n) <= get(q.back().p, n)) {
+                while (q.size() &&
+                       get(i, q.back().l) <= get(q.back().p, q.back().l))
+                    q.pop_back();
+                if (q.empty()) {
+                    node in;
+                    in.l = i;
+                    in.r = n;
+                    in.p = i;
+                    q.push_back(in);
+                } else {
+                    int pos = find(q.back(), i);
+                    node in;
+                    q.back().r = pos - 1;
+                    in.l = pos;
+                    in.r = n;
+                    in.p = i;
+                    q.push_back(in);
+                }
+            }
+        }
+        if (f[n] > 1000000000000000000ll)
+            printf("Too hard to arrange\n");
+        else
+            printf("%lld\n", (long long)f[n]);
+    }
+    return 0;
 }
