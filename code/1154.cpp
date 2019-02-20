@@ -1,5 +1,9 @@
 // 1154.cpp
+#include <algorithm>
+#include <cstring>
 #include <iostream>
+#include <queue>
+#include <utility>
 /*
 桃花源记
 
@@ -24,3 +28,100 @@
 
 南阳刘子骥，高尚士也，闻之，欣然规往。未果，寻病终，后遂无问津者。
 */
+int const Maxn = 1005;
+int head[Maxn], tot;
+int ver[Maxn * 40], edge[Maxn * 40], Next[Maxn * 40];
+int n, m, p, status;
+int f[Maxn][1 << 6], sta[Maxn], g[Maxn];
+bool inqueue[Maxn][1 << 6];
+std::queue<std::pair<int, int>> q;
+
+inline void add(int u, int v, int w) { ver[++tot] = v, edge[tot] = w, Next[tot] = head[u], head[u] = tot; }
+void spfa();
+bool chk(int s);
+void steiner_tree();
+
+int main(int argc, char const *argv[]) {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(NULL);
+    int T;
+    std::cin >> T;
+    while (T--) {
+        std::cin >> n >> m >> p;
+        int tmp = m;
+        m = n - p, n = p, p = tmp;
+        memset(head, 0, sizeof(head));
+        memset(sta, 0, sizeof(sta));
+        memset(inqueue, 0, sizeof(inqueue));
+        tot = 0, status = 1 << (n * 2);
+        for (int i = 0; i < n + m; i++)
+            for (int j = 0; j < status; j++)
+                f[i][j] = 0x3f3f3f3f;
+        for (int i = 0; i < n; i++) {
+            sta[i] = 1 << i;
+            f[i][sta[i]] = 0;
+            f[m + i][sta[m + i] = 1 << (n + i)] = 0;
+        }
+        for (int i = 1, u, w, v; i <= p; i++) {
+            std::cin >> u >> v >> w;
+            add(--u, --v, w), add(v, u, w);
+        }
+        steiner_tree();
+        if (g[status - 1] == 0x3f3f3f3f)
+            std::cout << "No solution\n";
+        else
+            std::cout << g[status - 1] << '\n';
+    }
+    return 0;
+}
+
+void spfa() {
+    while (!q.empty()) {
+        std::pair<int, int> x = q.front();
+        q.pop();
+        inqueue[x.first][x.second] = false;
+        for (int i = head[x.first]; i; i = Next[i]) {
+            int y = ver[i], s = x.second | sta[y];
+            if (f[x.first][x.second] + edge[i] < f[y][s]) {
+                f[y][s] = f[x.first][x.second] + edge[i];
+                if (s == x.second && !inqueue[y][s])
+                    q.push(std::make_pair(y, s)),
+                        inqueue[y][s] = true;
+            }
+        }
+    }
+}
+
+bool chk(int s) {
+    int sum = 0;
+    for (int i = 0; i < n; i++) {
+        if (s & (1 << i))
+            sum++;
+        if (s & (1 << (n + i)))
+            sum--;
+    }
+    return !sum;
+}
+
+void steiner_tree() {
+    for (int i = 0; i < status; i++) {
+        for (int j = 0; j < n + m; j++) {
+            for (int k = i; k; k = (k - 1) & i)
+                f[j][i] = std::min(f[j][i], f[j][k | sta[j]] + f[j][(i - k) | sta[j]]);
+            if (f[j][i] != 0x3f3f3f3f)
+                q.push(std::make_pair(j, i)), inqueue[j][i] = true;
+        }
+        spfa();
+    }
+    for (int i = 0; i < status; i++) {
+        g[i] = 0x3f3f3f3f;
+        for (int j = 0; j < n + m; j++)
+            g[i] = std::min(g[i], f[j][i]);
+    }
+    for (int i = 1; i < status; i++) {
+        if (chk(i))
+            for (int j = (i - 1) & i; j; j = (j - i) & i)
+                if (chk(j))
+                    g[i] = std::min(g[i], g[j] + g[i - j]);
+    }
+}
