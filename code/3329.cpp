@@ -26,7 +26,7 @@ int main(int argc, char const *argv[]) {
     int m, k, cnt, tmp;
     std::cin >> n;
     for (int i = 1, x, y, z; i <= n - 1; i++)
-        std::cin >> x >> y >> z, add(x, y, z), add(y, x, z);
+        std::cin >> x >> y >> z, add(x,   y, z), add(y, x, z);
     minn[1] = 0x3f3f3f3f3f3f3f3f;
     dfs(1, 0, 0);
     st();
