@@ -4,7 +4,7 @@
 #include <iostream>
 
 int const Maxn = 100010, Maxm = 300010, Maxk = 22;
-int Next[Maxm], head[Maxn], ver[Maxm], edge[Maxm];
+int Next[Maxm >> 1], head[Maxn], ver[Maxm >> 1], edge[Maxm >> 1];
 int n, m, dlt = 0x3f3f3f3f, tot;
 long long ans;
 int p[Maxn][Maxk], max1[Maxn][Maxk], max2[Maxn][Maxk], dep[Maxn], prt[Maxn];
@@ -36,7 +36,9 @@ int main(int argc, char const *argv[]) {
         if (!mark[i]) {
             int x = e[i].x, y = e[i].y, v = e[i].v, u = lca(x, y);
             query(x, u, v), query(y, u, v);
+            //std::cout << dlt << '\n';
         }
+    //std::cout << ans << '\n';
     std::cout << ans + dlt << '\n';
     return 0;
 }
@@ -44,11 +46,11 @@ int main(int argc, char const *argv[]) {
 void dfs(int x) {
     for (int i = 1; i <= 18; i++) {
         p[x][i] = p[p[x][i - 1]][i - 1];
-        int t1 = max1[x][i - 1], t2 = max1[p[x][i - 1]][i - 1];
-        max1[x][i] = std::max(t1, t2);
+        int tmp1 = max1[x][i - 1], tmp2 = max1[p[x][i - 1]][i - 1];
+        max1[x][i] = std::max(tmp1, tmp2);
         max2[x][i] = std::max(max2[x][i - 1], max2[p[x][i - 1]][i - 1]);
-        if (t1 != t2)
-            max2[x][i] = std::max(max2[x][i], std::min(t1, t2));
+        if (tmp1 != tmp2)
+            max2[x][i] = std::max(max2[x][i], std::min(tmp1, tmp2));
     }
     for (int i = head[x]; i; i = Next[i]) {
         int y = ver[i], z = edge[i];
@@ -87,16 +89,16 @@ int lca(int x, int y) {
     return p[x][0];
 }
 
-void query(int x, int u, int v) {
+void query(int x, int y, int z) {
     int maxx = 0, maxs = 0;
-    for (int i = 18, h = dep[x] - dep[u]; i >= 0; i--)
+    for (int i = 18, h = dep[x] - dep[y]; i >= 0; i--)
         if (h & (1 << i)) {
             if (max1[x][i] > maxx)
                 maxs = maxx, maxx = max1[x][i];
             maxs = std::max(maxs, max2[x][i]), h -= (1 << i);
         }
-    if (v == maxx)
-        dlt = std::min(dlt, v - maxs);
+    if (z == maxx)
+        dlt = std::min(dlt, z - maxs);
     else
-        dlt = std::min(dlt, v - maxx);
+        dlt = std::min(dlt, z - maxx);
 }
