@@ -4,8 +4,8 @@
 #include <iostream>
 
 int const Maxn = 100010, Maxm = 300010, Maxk = 22;
-int Next[Maxm >> 1], head[Maxn], ver[Maxm >> 1], edge[Maxm >> 1];
-int n, m, dlt = 0x3f3f3f3f, tot;
+int Next[Maxm << 1], head[Maxn], ver[Maxm << 1], edge[Maxm << 1];
+int n, m, dlt = 0x7fffffff, tot;
 long long ans;
 int p[Maxn][Maxk], max1[Maxn][Maxk], max2[Maxn][Maxk], dep[Maxn], prt[Maxn];
 bool mark[Maxm];
