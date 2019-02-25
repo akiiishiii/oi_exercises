@@ -16,14 +16,12 @@ typedef pair<int, int> P;
 int dis[mx], vis[mx], g[mx][mx], Max[mx][mx], pre[mx], mark[mx][mx], m, n;
 vector<P> map[mx];
 
-int prim()
-{
+int prim() {
     memset(dis, inf, sizeof(dis));
     memset(vis, 0, sizeof(vis));
     dis[1] = 0;
     int ans = 0;
-    for (int i = 1; i <= n; i++)
-    {
+    for (int i = 1; i <= n; i++) {
         int minn = inf, x = 0;
         for (int j = 1; j <= n; j++)
             if (!vis[j] && minn > dis[j])
@@ -34,19 +32,18 @@ int prim()
         ans += dis[x];
         for (int j = 1; j <= n; j++)
             if (vis[j])
-                Max[x][j] = Max[j][x] = x == j ? 0 : max(Max[pre[x]][j], dis[x]);
+                Max[x][j] = Max[j][x] =
+                    x == j ? 0 : max(Max[pre[x]][j], dis[x]);
             else if (dis[j] > g[x][j])
                 dis[j] = g[x][j], pre[j] = x;
     }
     return ans;
 }
 
-int check(int sum)
-{
+int check(int sum) {
     int ans = inf;
     for (int u = 1; u <= n; u++)
-        for (auto d : map[u])
-        {
+        for (auto d : map[u]) {
             int v = d.x;
             int w = d.y;
             if ((pre[v] != u && pre[u] != v) || g[u][v] != w || mark[u][v])
@@ -57,15 +54,13 @@ int check(int sum)
     return ans;
 }
 
-int main()
-{
+int main() {
     memset(g, inf, sizeof(g));
     memset(mark, 0, sizeof(mark));
     scanf("%d%d", &n, &m);
     for (int i = 1; i <= n; i++)
         map[i].clear();
-    for (int i = 1; i <= m; i++)
-    {
+    for (int i = 1; i <= m; i++) {
         int u, v, w;
         scanf("%d%d%d", &u, &v, &w);
         g[u][v] = g[v][u] = min(g[u][v], w);
@@ -76,8 +71,7 @@ int main()
     int ans = prim();
     if (ans == -1)
         puts("No way");
-    else
-    {
+    else {
         ans = check(ans);
         ans == inf ? puts("No second way") : printf("%d\n", ans);
     }
