@@ -1,117 +1,233 @@
-#include<iostream>
-#include<cstring>
-#include<algorithm>
-#include<cmath>
+#include <algorithm>
+#include <cmath>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <iomanip>
+#include <iostream>
+#include <map>
+#include <queue>
+#include <stack>
+#include <vector>
+#define MAX 1000005
+#define _MAX 100005
+#define MAX_ 1200005
+#define INF 0x7fffffff
 using namespace std;
-const int maxn=100005;
-struct FrontStar
-{struct Bian{int next,num,v;}l[maxn*2];
- int bt[maxn],cnt;
- void lian(int a,int b,int v)
- {l[++cnt].num=b;
-  l[cnt].next=bt[a];
-  l[cnt].v=v;
-  bt[a]=cnt;
-  //cout<<a<<"->"<<b<<" "<<v<<endl;
- }
- void Init()
- {memset(bt,0,sizeof(bt));
-  cnt=0;
- }
-}r;
-int N,dfs[maxn]={0},tot=0,fa[maxn]={0},d[maxn]={0},dl[maxn]={0};
-void DFS(int x)
-{dfs[x]=++tot;
- for(int i=r.bt[x];i;i=r.l[i].next)
-    {int next=r.l[i].num;
-     if(!dfs[next])
-       {fa[next]=x;
-        d[next]=d[x]+1;
-        dl[next]=dl[x]+r.l[i].v;
-	    DFS(next);
-       }
+inline char nc() {
+    static char buf[100000], *p1 = buf, *p2 = buf;
+    return p1 == p2 &&
+                   (p2 = (p1 = buf) + fread(buf, 1, 100000, stdin), p1 == p2)
+               ? EOF
+               : *p1++;
+}
+// inline char nc(){return getchar();}
+inline int read() {
+    char t;
+    int u = 0, k = 1;
+    t = nc();
+    while (t < '0' || t > '9') {
+        if (t == '-')
+            k = -1;
+        t = nc();
+    }
+    while (t >= '0' && t <= '9') {
+        u = u * 10 + t - '0';
+        t = nc();
+    }
+    return u * k;
+}
+int n, m, Q, tot = 0, cnt = 0, p_fa[MAX_][2], vst[MAX], ans[_MAX];
+struct bianji {
+    int st, to, val;
+} b[MAX];
+bool cmp(bianji x, bianji y) { return x.val < y.val; }
+struct query {
+    int op, x, y, val;
+} q[_MAX];
+vector<int> id[_MAX], To[_MAX];
+//--------------------
+int ch[MAX_][2], fa[MAX_], rev[MAX_], val[MAX_], aux[MAX_], mx[MAX_],
+    mxid[MAX_];
+int ID;
+void pushup(int x) {
+    if (mx[ch[x][0]] > mx[ch[x][1]]) {
+        mx[x] = mx[ch[x][0]];
+        mxid[x] = mxid[ch[x][0]];
+    } else {
+        mx[x] = mx[ch[x][1]];
+        mxid[x] = mxid[ch[x][1]];
+    }
+    if (val[x] > mx[x]) {
+        mx[x] = val[x];
+        mxid[x] = x;
     }
 }
-struct LowComAnc
-{int p[maxn][50];
- void ST()
- {memset(p,-1,sizeof(p));
-  for(int i=1;i<=N;i++)p[i][0]=fa[i];
-  for(int j=1;(1<<j)<=N;j++)
-     {for(int i=1;i<=N;i++)
-         if(~p[i][j-1])p[i][j]=p[p[i][j-1]][j-1];
-     }
- }
- int LCA(int a,int b)
- {if(d[a]<d[b])swap(a,b);
-  int k=log(d[a])/log(2);
-  for(int i=k;i>=0;i--)
-     if(d[a]-(1<<i)>=d[b])a=p[a][i];
-  if(a==b)return b;
-  for(int i=k;i>=0;i--)
-     if(p[a][i]!=-1&&p[a][i]!=p[b][i])
-       {a=p[a][i];
-        b=p[b][i];
-       }
-  return p[a][0];
- }
-}rl;
-bool comp(int a,int b)
-{return dfs[a]<dfs[b];
+void addrev(int x) {
+    swap(ch[x][0], ch[x][1]);
+    rev[x] ^= 1;
 }
-int p[maxn],st[maxn];
-void SVT()
-{int k;
- scanf("%d",&k);
- //u.Init();
- for(int i=1;i<=k;i++)
-    scanf("%d",&p[i]);
- sort(p+1,p+1+k,comp);
- tot=1;
- int top=0;
- for(int i=2;i<=k;i++)
-    {if(rl.LCA(p[top],p[i])!=p[tot])p[++tot]=p[i];
+void pushdown(int x) {
+    if (rev[x]) {
+        addrev(ch[x][0]);
+        addrev(ch[x][1]);
+        rev[x] = 0;
     }
- st[++top]=1;
- int ans=0;
- for(int i=1;i<=k;i++)
-    {int lca=rl.LCA(p[i],st[top]);
-     if(lca==st[top])
-       {st[++top]=p[i];
-        continue;
-       }
-     while(1)
-     {if(d[st[top-1]]<=d[lca])
-        {//u.lian(lca,st[top],abs(dl[st[top]]-dl[lca]));
-         ans+=abs(dl[st[top]]-dl[lca]);
-		 top--;
-         if(st[top]!=p[i])st[++top]=lca;
-         break;
+}
+void rotate(int x) {
+    int y = fa[x], z = fa[y], L = (ch[y][0] != x), R = L ^ 1;
+    if (!aux[y])
+        aux[y] = 1, aux[x] = 0;
+    else {
+        if (ch[z][0] == y)
+            ch[z][0] = x;
+        else
+            ch[z][1] = x;
+    }
+    fa[x] = z;
+    fa[y] = x;
+    fa[ch[x][R]] = y;
+    ch[y][L] = ch[x][R];
+    ch[x][R] = y;
+    pushup(y);
+    pushup(x);
+}
+void splay(int x) {
+    pushdown(x);
+    while (aux[x]) {
+        int y = fa[x], z = fa[y];
+        if (aux[y])
+            pushdown(z);
+        pushdown(y);
+        pushdown(x);
+        if (aux[y]) {
+            if (ch[y][0] == x ^ ch[z][0] == y)
+                rotate(x);
+            else
+                rotate(y);
         }
-      //u.lian(st[top-1],st[top],abs(dl[st[top-1]]-dl[st[top]]));
-      ans+=abs(dl[st[top-1]]-dl[st[top]]);
-	  top--;
-     }
-     if(st[top]!=p[i])st[++top]=p[i];
+        rotate(x);
     }
- //while(--top)u.lian(st[top],st[top+1],abs(dl[st[top]]-dl[st[top+1]]));
- while(--top)ans+=abs(dl[st[top]]-dl[st[top+1]]);
- printf("%d\n",ans);
 }
-int main()
-{scanf("%d",&N);
- for(int i=1;i<N;i++)
-    {int u,v,w;
-     scanf("%d%d%d",&u,&v,&w);
-     r.lian(u,v,w);
-     r.lian(v,u,w);
+void access(int x) {
+    int y = 0;
+    while (x) {
+        splay(x);
+        aux[ch[x][1]] = 0;
+        ch[x][1] = y;
+        aux[y] = 1;
+        pushup(x);
+        y = x;
+        x = fa[x];
     }
- d[1]=1;
- DFS(1);
- rl.ST();
- int M;
- scanf("%d",&M);
- while(M--)
- {SVT();
- }
+}
+void makeroot(int x) {
+    access(x);
+    splay(x);
+    addrev(x);
+}
+void link(int x, int y) {
+    makeroot(x);
+    fa[x] = y;
+}
+void cut(int x, int y) {
+    makeroot(x);
+    access(y);
+    splay(y);
+    ch[y][0] = fa[x] = aux[x] = 0;
+}
+void split(int x, int y) {
+    makeroot(x);
+    access(y);
+    splay(y);
+}
+int getmax(int x, int y) {
+    split(x, y);
+    ID = mxid[y];
+    return mx[y];
+}
+//--------------------
+int prt[MAX];
+int findprt(int x) {
+    if (prt[x] == x)
+        return x;
+    return prt[x] = findprt(prt[x]);
+}
+void Kruskal() {
+    sort(b + 1, b + tot + 1, cmp);
+    for (int i = 1; i <= n; i++)
+        prt[i] = i;
+    int num = 0;
+    for (int i = 1; i <= tot; i++) {
+        int f1 = findprt(b[i].st), f2 = findprt(b[i].to);
+        if (f1 != f2) {
+            prt[f1] = f2;
+            num++;
+            val[++cnt] = mx[cnt] = b[i].val;
+            mxid[cnt] = cnt;
+            link(cnt, b[i].st);
+            link(cnt, b[i].to);
+            p_fa[cnt][0] = b[i].st;
+            p_fa[cnt][1] = b[i].to;
+        }
+        if (num == n - 1)
+            break;
+    }
+}
+int main() {
+    n = read();
+    m = read();
+    Q = read();
+    cnt = n;
+    for (int i = 1; i <= n; i++)
+        val[i] = mx[i] = 0, mxid[i] = i;
+    for (int i = 1; i <= m; i++) {
+        b[i].st = read();
+        b[i].to = read();
+        b[i].val = read();
+        if (b[i].st > b[i].to)
+            swap(b[i].st, b[i].to);
+        To[b[i].st].push_back(b[i].to);
+        id[b[i].st].push_back(i);
+    }
+    for (int i = 1; i <= Q; i++) {
+        q[i].op = read();
+        q[i].x = read();
+        q[i].y = read();
+        if (q[i].x > q[i].y)
+            swap(q[i].x, q[i].y);
+        if (q[i].op == 2) {
+            for (int j = 0; j < To[q[i].x].size(); j++)
+                if (To[q[i].x][j] == q[i].y) {
+                    vst[id[q[i].x][j]] = 1;
+                    q[i].val = b[id[q[i].x][j]].val;
+                    break;
+                }
+        }
+    }
+    for (int i = 1; i <= m; i++)
+        if (!vst[i])
+            b[++tot] = b[i];
+    Kruskal();
+    while (Q) {
+        if (q[Q].op == 1)
+            ans[++ans[0]] = getmax(q[Q].x, q[Q].y);
+        else {
+            int MX = getmax(q[Q].x, q[Q].y);
+            if (MX > q[Q].val) {
+                cut(ID, p_fa[ID][0]);
+                cut(ID, p_fa[ID][1]);
+                val[++cnt] = mx[cnt] = q[Q].val;
+                mxid[cnt] = cnt;
+                link(cnt, q[Q].x);
+                link(cnt, q[Q].y);
+                p_fa[cnt][0] = q[Q].x;
+                p_fa[cnt][1] = q[Q].y;
+            }
+        }
+        Q--;
+    }
+    for (int i = ans[0]; i >= 1; i--)
+        printf("%d\n", ans[i]);
+    return 0;
 }
