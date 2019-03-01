@@ -1,53 +1,93 @@
 // 3401.cpp
 #include <algorithm>
+#include <cstring>
 #include <iostream>
 
-int const Maxn = 100010;
-int n, m, cnt = 0;
-int x[Maxn], a[Maxn], y[Maxn], rt[Maxn];
+int const Maxn = 30010;
 
-struct seg {
-    int lc, rc, sum;
-} tree[Maxn * 20];
+long long root[Maxn], n, m, tmp[Maxn * 3], tot = 0, cnt = 0;
+struct node {
+    long long p, q;
+} a[Maxn];
 
-int insert(int x, int last, int l, int r) {
-    int c = ++cnt;
-    tree[c] = tree[last];
-    tree[c].sum++;
-    if (l == r)
-        return cnt;
-    if (x <= (l + r) / 2)
-        tree[c].lc = insert(x, tree[last].lc, l, (l + r) / 2);
-    else
-        tree[c].rc = insert(x, tree[last].rc, (l + r) / 2 + 1, r);
-    return c;
-}
+struct que {
+    long long l, r, b, u, k;
+} b[Maxn];
 
-int ask(int t1, int t2, int k, int l, int r) {
-    if (l == r)
-        return l;
-    int x = tree[tree[t2].lc].sum - tree[tree[t1].lc].sum;
-    if (k <= x)
-        return ask(tree[t1].lc, tree[t2].lc, k, l, (l + r) / 2);
-    else
-        return ask(tree[t1].rc, tree[t2].rc, k - x, (l + r) / 2 + 1, r);
-}
+struct chairman_tree {
+    long long lc, rc, sum;
+} tr[Maxn * 40];
+
+long long insert(long long last, long long l, long long r, long long pos, long long val);
+long long query(long long ll, long long rr, long long l, long long r, long long pos);
+long long ask(long long ll, long long rr, long long l, long long r, long long k);
 
 int main(int argc, char const *argv[]) {
     std::ios_base::sync_with_stdio(false);
     std::cin.tie(NULL);
-    std::cin >> n >> m;
-    for (int i = 1; i <= n; i++)
-        std::cin >> x[i], y[i] = x[i];
-    std::sort(x + 1, x + n + 1);
-    int sz = std::unique(x + 1, x + n + 1) - x - 1;
-    for (int i = 1; i <= n; i++)
-        a[i] = std::lower_bound(x + 1, x + sz + 1, y[i]) - x;
-    for (int i = 1; i <= n; i++)
-        rt[i] = insert(a[i], rt[i - 1], 1, n);
-    for (int i = 1, l, r, k; i <= m; i++) {
-        std::cin >> l >> r >> k;
-        std::cout << x[ask(rt[l - 1], rt[r], k, 1, n)] << '\n';
+    std::cin >> n;
+    for (long long i = 1; i <= n; i++)
+        std::cin >> a[i].p >> a[i].q, tmp[++tot] = a[i].p;
+    std::cin >> m;
+    for (long long i = 1; i <= m; i++) {
+        std::cin >> b[i].l >> b[i].r >> b[i].b >> b[i].u >> b[i].k;
+        tmp[++tot] = b[i].b, tmp[++tot] = b[i].u;
+    }
+    std::sort(tmp + 1, tmp + tot + 1);
+    tot = std::unique(tmp + 1, tmp + tot + 1) - tmp - 1;
+    for (long long i = 1; i <= n; i++) {
+        a[i].p = std::lower_bound(tmp + 1, tmp + tot + 1, a[i].p) - tmp;
+        root[i] = insert(root[i - 1], 1, tot, a[i].p, a[i].q);
+    }
+    for (long long i = 1; i <= m; i++) {
+        b[i].b = std::lower_bound(tmp + 1, tmp + tot + 1, b[i].b) - tmp;
+        b[i].u = std::lower_bound(tmp + 1, tmp + tot + 1, b[i].u) - tmp;
+        long long dlt;
+        if (b[i].b == 1)
+            dlt = 0;
+        else
+            dlt = query(root[b[i].l - 1], root[b[i].r], 1, tot, b[i].b - 1);
+        long long k = dlt + b[i].k, mx = query(root[b[i].l - 1], root[b[i].r], 1, tot, b[i].u);
+        if (mx < k)
+            std::cout << "-1\n";
+        else
+            std::cout << tmp[ask(root[b[i].l - 1], root[b[i].r], 1, tot, k)] << '\n';
     }
     return 0;
+}
+
+long long insert(long long last, long long l, long long r, long long pos, long long val) {
+    long long c = ++cnt;
+    tr[c] = tr[last];
+    tr[c].sum += val;
+    if (l == r)
+        return c;
+    long long mid = (l + r) >> 1;
+    if (pos <= mid)
+        tr[c].lc = insert(tr[last].lc, l, mid, pos, val);
+    else
+        tr[c].rc = insert(tr[last].rc, mid + 1, r, pos, val);
+    return c;
+}
+
+long long query(long long ll, long long rr, long long l, long long r, long long pos) {
+    if (l == r)
+        return tr[rr].sum - tr[ll].sum;
+    long long mid = (l + r) >> 1;
+    if (pos <= mid)
+        return query(tr[ll].lc, tr[rr].lc, l, mid, pos);
+    else
+        return query(tr[ll].rc, tr[rr].rc, mid + 1, r, pos) +
+               (tr[tr[rr].lc].sum - tr[tr[ll].lc].sum);
+}
+
+long long ask(long long ll, long long rr, long long l, long long r, long long k) {
+    long long mid = (l + r) >> 1;
+    long long lk = tr[tr[rr].lc].sum - tr[tr[ll].lc].sum;
+    if (l == r)
+        return l;
+    if (k <= lk)
+        return ask(tr[ll].lc, tr[rr].lc, l, mid, k);
+    else
+        return ask(tr[ll].rc, tr[rr].rc, mid + 1, r, k - lk);
 }
