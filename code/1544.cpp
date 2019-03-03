@@ -16,26 +16,39 @@ struct edges {
 inline void add(int x, int y) { ver[++tot] = y, Next[tot] = head[x], head[x] = tot; }
 int search(int x) { return (x == prt[x] ? x : search(prt[x])); }
 void dfs(int x);
-void ex_kruskal();
+inline void ex_kruskal();
+inline void read(int &x);
+inline void write(int x);
 
 int main(int argc, char const *argv[]) {
     std::ios_base::sync_with_stdio(false);
     std::cin.tie(NULL);
     int T, ans;
-    std::cin >> T;
-    for (int t = 1; t <= T; t++) {
-        std::cin >> n;
-        m = n - 1;
+    read(T);
+    for (int t = 1, tmp; t <= T; t++) {
+        read(n);
+        m = n - 1, tmp = (n << 1) - 1;
         ans = tot = 0;
-        memset(head, 0, sizeof(head));
+        for (int i = 1; i <= tmp; i++)
+            head[i] = 0;
         for (int i = 1; i <= m; i++)
-            std::cin >> e[i].a >> e[i].b >> e[i].w;
+            read(e[i].a), read(e[i].b), read(e[i].w);
         ex_kruskal();
-        dfs((n << 1) - 1);
-        for (int i = 1; i <= (n << 1) - 1; i++)
+        dfs(tmp);
+        for (int i = 1; i <= tmp; i++)
             ans = std::max(ans, sum[i]);
-        std::cout << "Case " << t << ": " << ans << '\n';
+        std::cout.put('C');
+        std::cout.put('a');
+        std::cout.put('s');
+        std::cout.put('e');
+        std::cout.put(' ');
+        write(t);
+        std::cout.put(':');
+        std::cout.put(' ');
+        write(ans);
+        std::cout.put('\n');
     }
+    return 0;
 }
 
 void dfs(int x) {
@@ -69,5 +82,29 @@ void ex_kruskal() {
             if (cnt == tot - 1)
                 break;
         }
+    }
+}
+
+inline void read(int &x) {
+    x = 0;
+    char c = std::cin.get();
+    while (c < '0' || c > '9')
+        c = std::cin.get();
+    while (c >= '0' && c <= '9') {
+        x = x * 10 + c - '0';
+        c = std::cin.get();
+    }
+}
+
+inline void write(int x) {
+    int y = 10, len = 1;
+    while (y <= x) {
+        y *= 10;
+        len++;
+    }
+    while (len--) {
+        y /= 10;
+        std::cout.put(x / y + 48);
+        x %= y;
     }
 }

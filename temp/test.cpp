@@ -1,72 +1,91 @@
-#include <algorithm>
-#include <cstring>
-#include <iostream>
-
-int const Maxn = 200002;
-int tot, n, m;
-int siz[Maxn], prt[Maxn], val[Maxn], sum[Maxn];
-int head[Maxn], ver[Maxn << 1], Next[Maxn << 1];
-
-struct edges {
-    int a, b, w;
-    bool operator<(edges const &e) const { return w > e.w; }
-} e[100002];
-
-inline void add(int x, int y) { ver[++tot] = y, Next[tot] = head[x], head[x] = tot; }
-int search(int x) { return (x == prt[x] ? x : search(prt[x])); }
-void dfs(int x);
-void ex_kruskal();
-
-int main(int argc, char const *argv[]) {
-    std::ios_base::sync_with_stdio(false);
-    std::cin.tie(NULL);
-    int T, ans;
-    std::cin >> T;
-    for (int t = 1; t <= T; t++) {
-        std::cin >> n;
-        m = n - 1;
-        ans = tot = 0;
-        memset(head, 0, sizeof(head));
-        for (int i = 1; i <= m; i++)
-            std::cin >> e[i].a >> e[i].b >> e[i].w;
-        ex_kruskal();
-        dfs((n << 1) - 1);
-        for (int i = 1; i <= (n << 1) - 1; i++)
-            ans = std::max(ans, sum[i]);
-        std::cout << "Case " << t << ": " << ans << '\n';
-    }
+#include <bits/stdc++.h>
+#define inf 0x7fffffff
+//#define inline __attribute__((optimize("-inline")))
+//#define getchar nc
+namespace FastIO {
+inline char nc() {
+    static char buf[100000], *p1 = buf, *p2 = buf;
+    return p1 == p2 &&
+                   (p2 = (p1 = buf) + fread(buf, 1, 100000, stdin), p1 == p2)
+               ? EOF
+               : *p1++;
 }
-
-void dfs(int x) {
-    int num = 0;
-    sum[x] = siz[x] = 0;
-    for (int i = head[x]; i; i = Next[i]) {
-        int y = ver[i];
-        num++;
-        dfs(y);
-        if (y > n && num == 1)
-            sum[x] = sum[y];
-        if (siz[x])
-            sum[x] = std::max(sum[x] + val[x] * siz[y], sum[y] + siz[x] * val[x]);
-        siz[x] += siz[y];
+inline int read() {
+    char t;
+    int u = 0, k = 1;
+    t = getchar();
+    while (t < '0' || t > '9') {
+        if (t == '-')
+            k = -1;
+        t = getchar();
     }
-    if (!head[x])
-        siz[x] = 1;
+    while (t >= '0' && t <= '9') {
+        u = u * 10 + t - '0';
+        t = getchar();
+    }
+    return u * k;
 }
-
-void ex_kruskal() {
-    int cnt = n, tot = n << 1;
-    std::sort(e + 1, e + 1 + m);
-    for (int i = 1; i <= tot; i++)
-        prt[i] = i;
-    for (int i = 1, p1, p2; i <= m; i++) {
-        p1 = search(e[i].a), p2 = search(e[i].b);
-        if (p1 != p2) {
-            prt[p1] = prt[p2] = ++cnt;
-            val[cnt] = e[i].w;
-            add(cnt, p1), add(cnt, p2);
-            if (cnt == tot - 1)
-                break;
+template <typename T> inline void read(T &u) {
+    char t;
+    T k = 1;
+    u = 0;
+    t = getchar();
+    while (t < '0' || t > '9') {
+        if (t == '-')
+            k = -1;
+        t = getchar();
+    }
+    while (t >= '0' && t <= '9') {
+        u = u * 10 + t - '0';
+        t = getchar();
+    }
+    if (t == '.') {
+        T mass = 0.1;
+        t = getchar();
+        while (t >= '0' && t <= '9') {
+            u += mass * (t - '0');
+            mass /= 10;
+            t = getchar();
         }
     }
+    u *= k;
 }
+inline int read(char asd[]) {
+    char t = getchar();
+    int u = 0;
+    while (t == ' ' || t == '\n')
+        t = getchar();
+    while (t != ' ' && t != '\n')
+        asd[u++] = t, t = getchar();
+    asd[u] = '\0';
+    return u;
+}
+char sr[1 << 23], z[23];
+int C = -1, Z;
+inline void wer(int x, char T) {
+    int y = 0;
+    if (x < 0)
+        y = 1, x = -x;
+    while (z[++Z] = x % 10 + '0', x /= 10)
+        ;
+    if (y)
+        z[++Z] = '-';
+    while (sr[++C] = z[Z], --Z)
+        ;
+    sr[++C] = T;
+}
+inline void wer(char T[], char QWQ) {
+    for (int i = 0; T[i] != '\0'; i++)
+        sr[++C] = T[i];
+    sr[++C] = QWQ;
+}
+inline void out() {
+    fwrite(sr, 1, C + 1, stdout);
+    C = -1;
+}
+} // namespace FastIO
+using namespace std;
+using namespace FastIO;
+const int N = 100005;
+int n, m, a, b, c, d, e, limit;
+int main() { return out(), 0; }
