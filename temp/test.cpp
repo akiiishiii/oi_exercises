@@ -1,118 +1,72 @@
 #include <algorithm>
 #include <cstring>
 #include <iostream>
-#include <vector>
 
-using namespace std;
-const int maxn = 111;
-const int maxm = 1111;
+int const Maxn = 200002;
+int tot, n, m;
+int siz[Maxn], prt[Maxn], val[Maxn], sum[Maxn];
+int head[Maxn], ver[Maxn << 1], Next[Maxn << 1];
 
-struct pp {
-    int a, b, c;
-    bool operator<(const pp &x) const { return c < x.c; }
-} e[maxm];
+struct edges {
+    int a, b, w;
+    bool operator<(edges const &e) const { return w > e.w; }
+} e[100002];
 
-int n, m;
-int mod;
-long long f[maxn], U[maxn], vst[maxn];
-long long g[maxn][maxn], c[maxn][maxn];
-vector<int> v[maxn];
-int find(int x, long long f[]) {
-    if (x == f[x])
-        return x;
+inline void add(int x, int y) { ver[++tot] = y, Next[tot] = head[x], head[x] = tot; }
+int search(int x) { return (x == prt[x] ? x : search(prt[x])); }
+void dfs(int x);
+void ex_kruskal();
 
-    return f[x] = find(f[x], f);
-}
-long long det(long long a[][111], int n) {
-    int i, j;
-    long long ret = 1;
-    for (i = 0; i < n; i++)
-        for (j = 0; j < n; j++)
-            a[i][j] %= mod;
-    for (i = 1; i < n; i++) {
-        for (j = i + 1; j < n; j++)
-            while (a[j][i]) {
-                int t = a[i][i] / a[j][i];
-                for (int k = i; k < n; k++)
-                    a[i][k] = (a[i][k] - a[j][k] * t) % mod;
-                for (int k = i; k < n; k++)
-                    swap(a[i][k], a[j][k]);
-                ret = -ret;
-            }
-        if (a[i][i] == 0)
-            return 0;
-        ret = ret * a[i][i] % mod;
+int main(int argc, char const *argv[]) {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(NULL);
+    int T, ans;
+    std::cin >> T;
+    for (int t = 1; t <= T; t++) {
+        std::cin >> n;
+        m = n - 1;
+        ans = tot = 0;
+        memset(head, 0, sizeof(head));
+        for (int i = 1; i <= m; i++)
+            std::cin >> e[i].a >> e[i].b >> e[i].w;
+        ex_kruskal();
+        dfs((n << 1) - 1);
+        for (int i = 1; i <= (n << 1) - 1; i++)
+            ans = std::max(ans, sum[i]);
+        std::cout << "Case " << t << ": " << ans << '\n';
     }
-    return (ret + mod) % mod;
 }
-void solve() {
-    sort(e, e + m);
-    for (int i = 1; i <= n; i++) {
-        f[i] = i, vst[i] = 0;
+
+void dfs(int x) {
+    int num = 0;
+    sum[x] = siz[x] = 0;
+    for (int i = head[x]; i; i = Next[i]) {
+        int y = ver[i];
+        num++;
+        dfs(y);
+        if (y > n && num == 1)
+            sum[x] = sum[y];
+        if (siz[x])
+            sum[x] = std::max(sum[x] + val[x] * siz[y], sum[y] + siz[x] * val[x]);
+        siz[x] += siz[y];
     }
-    long long ed = -1;
-    long long ans = 1;
-    for (int k = 0; k <= m; k++) {
-        if (e[k].c != ed || k == m) {
-            for (int i = 1; i <= n; i++) {
-                if (vst[i]) {
-                    long long u = find(i, U);
-                    v[u].push_back(i);
-                    vst[i] = 0;
-                }
-            }
-            for (int i = 1; i <= n; i++) {
-                if (v[i].size() > 1) {
-                    for (int a = 1; a <= n; a++)
-                        for (int b = 1; b <= n; b++)
-                            c[a][b] = 0;
-                    int len = v[i].size();
-                    for (int a = 0; a < len; a++)
-                        for (int b = a + 1; b < len; b++) {
-                            int a1 = v[i][a];
-                            int b1 = v[i][b];
-                            c[a][b] = (c[b][a] -= g[a1][b1]);
-                            c[a][a] += g[a1][b1];
-                            c[b][b] += g[a1][b1];
-                        }
-                    long long ret = (long long)det(c, len);
-                    ans = (ans * ret) % mod;
-                    for (int a = 0; a < len; a++)
-                        f[v[i][a]] = i;
-                }
-            }
-            for (int i = 1; i <= n; i++) {
-                U[i] = f[i] = find(i, f);
-                v[i].clear();
-            }
-            if (k == m)
+    if (!head[x])
+        siz[x] = 1;
+}
+
+void ex_kruskal() {
+    int cnt = n, tot = n << 1;
+    std::sort(e + 1, e + 1 + m);
+    for (int i = 1; i <= tot; i++)
+        prt[i] = i;
+    for (int i = 1, p1, p2; i <= m; i++) {
+        p1 = search(e[i].a), p2 = search(e[i].b);
+        if (p1 != p2) {
+            prt[p1] = prt[p2] = ++cnt;
+            val[cnt] = e[i].w;
+            add(cnt, p1), add(cnt, p2);
+            if (cnt == tot - 1)
                 break;
-            ed = e[k].c;
         }
-        int a = e[k].a;
-        int b = e[k].b;
-        int a1 = find(a, f);
-        int b1 = find(b, f);
-        if (a1 == b1)
-            continue;
-        vst[a1] = vst[b1] = 1;
-        U[find(a1, U)] = find(b1, U);
-        g[a1][b1]++;
-        g[b1][a1]++;
     }
-    int flag = 0;
-    for (int i = 2; i <= n && !flag; i++)
-        if (U[i] != U[i - 1])
-            flag = 1;
-    if (m == 0)
-        flag = 1;
-    printf("%lld\n", flag ? 0 : ans % mod);
-}
-int main() {
-    mod = 31011;
-    scanf("%d%d", &n, &m);
-    for (int i = 0; i < m; i++)
-        scanf("%d%d%d", &e[i].a, &e[i].b, &e[i].c);
-    solve();
-    return 0;
 }
