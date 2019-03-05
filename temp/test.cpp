@@ -1,23 +1,55 @@
 #include <algorithm>
 #include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <ctime>
 
-using namespace std;
-#define LL unsigned long long
+long long n, m, tot, cnt, mini, mina, minb, ans;
+long long facts[550], num[550];
 
-const int Times = 10;
-const LL INF = (LL)1 << 61;
-const int N = 550;
+long long gcd(long long a, long long b) { return b ? gcd(b, a % b) : a; }
+long long multi(long long a, long long b, long long m);
+long long power(long long a, long long b, long long m);
+bool miller_Rabin(long long n);
+long long pollard_rho(long long n, long long c);
+void findfact(long long n, int c);
+void dfs(long long c, long long k);
 
-LL n, m, ct, cnt, mini, mina, minb, ans;
-LL fac[N], num[N];
+int main(int argc, char const *argv[]) {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(NULL);
+    srand((unsigned)time(NULL));
+    while (std::cin >> n >> m) {
+        if (n == m) {
+            std::cout << n << ' ' << m << '\n';
+            continue;
+        }
+        mini = 1ll << 61;
+        tot = cnt = 0;
+        ans = m / n;
+        findfact(ans, 120);
+        std::sort(facts, facts + tot);
+        num[0] = 1;
+        int k = 1;
+        for (long long i = 1; i < tot; i++) {
+            if (facts[i] == facts[i - 1])
+                ++num[k - 1];
+            else {
+                num[k] = 1;
+                facts[k++] = facts[i];
+            }
+        }
+        cnt = k;
+        dfs(0, 1);
+        if (mina > minb)
+            std::swap(mina, minb);
+        std::cout << mina << ' ' << minb << '\n';
+    }
+    return 0;
+}
 
-LL gcd(LL a, LL b) { return b ? gcd(b, a % b) : a; }
-
-LL multi(LL a, LL b, LL m) {
-    LL ans = 0;
+long long multi(long long a, long long b, long long m) {
+    long long ans = 0;
     while (b) {
         if (b & 1) {
             ans = (ans + a) % m;
@@ -29,8 +61,8 @@ LL multi(LL a, LL b, LL m) {
     return ans;
 }
 
-LL quick_mod(LL a, LL b, LL m) {
-    LL ans = 1;
+long long power(long long a, long long b, long long m) {
+    long long ans = 1;
     a %= m;
     while (b) {
         if (b & 1) {
@@ -43,20 +75,20 @@ LL quick_mod(LL a, LL b, LL m) {
     return ans;
 }
 
-bool Miller_Rabin(LL n) {
+bool miller_Rabin(long long n) {
     if (n == 2)
         return true;
     if (n < 2 || !(n & 1))
         return false;
-    LL a, m = n - 1, x, y;
+    long long a, m = n - 1, x, y;
     int k = 0;
     while ((m & 1) == 0) {
         k++;
         m >>= 1;
     }
-    for (int i = 0; i < Times; i++) {
+    for (int i = 0; i < 10; i++) {
         a = rand() % (n - 1) + 1;
-        x = quick_mod(a, m, n);
+        x = power(a, m, n);
         for (int j = 0; j < k; j++) {
             y = multi(x, x, n);
             if (y == 1 && x != 1 && x != n - 1)
@@ -69,8 +101,8 @@ bool Miller_Rabin(LL n) {
     return true;
 }
 
-LL Pollard_rho(LL n, LL c) {
-    LL x, y, d, i = 1, k = 2;
+long long pollard_rho(long long n, long long c) {
+    long long x, y, d, i = 1, k = 2;
     y = x = rand() % (n - 1) + 1;
     while (true) {
         i++;
@@ -87,25 +119,25 @@ LL Pollard_rho(LL n, LL c) {
     }
 }
 
-void find(LL n, int c) {
+void findfact(long long n, int c) {
     if (n == 1)
         return;
-    if (Miller_Rabin(n)) {
-        fac[ct++] = n;
+    if (miller_Rabin(n)) {
+        facts[tot++] = n;
         return;
     }
-    LL p = n;
-    LL k = c;
+    long long p = n;
+    long long k = c;
     while (p >= n)
-        p = Pollard_rho(p, c--);
-    find(p, k);
-    find(n / p, k);
+        p = pollard_rho(p, c--);
+    findfact(p, k);
+    findfact(n / p, k);
 }
 
-void dfs(LL c, LL value) {
-    LL s = 1, a, b;
+void dfs(long long c, long long k) {
+    long long s = 1, a, b;
     if (c == cnt) {
-        a = value;
+        a = k;
         b = ans / a;
         if (gcd(a, b) == 1) {
             a *= n;
@@ -118,40 +150,10 @@ void dfs(LL c, LL value) {
         }
         return;
     }
-    for (LL i = 0; i <= num[c]; i++) {
-        if (s * value > mini)
+    for (long long i = 0; i <= num[c]; i++) {
+        if (s * k > mini)
             return;
-        dfs(c + 1, s * value);
-        s *= fac[c];
+        dfs(c + 1, s * k);
+        s *= facts[c];
     }
-}
-
-int main() {
-    while (~scanf("%llu%llu", &n, &m)) {
-        if (n == m) {
-            printf("%llu %llu\n", n, m);
-            continue;
-        }
-        mini = INF;
-        ct = cnt = 0;
-        ans = m / n;
-        find(ans, 120);
-        sort(fac, fac + ct);
-        num[0] = 1;
-        int k = 1;
-        for (LL i = 1; i < ct; i++) {
-            if (fac[i] == fac[i - 1])
-                ++num[k - 1];
-            else {
-                num[k] = 1;
-                fac[k++] = fac[i];
-            }
-        }
-        cnt = k;
-        dfs(0, 1);
-        if (mina > minb)
-            swap(mina, minb);
-        printf("%llu %llu\n", mina, minb);
-    }
-    return 0;
 }
