@@ -1,21 +1,22 @@
-// 4595.cpp
+// 3622.cpp
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
 
-long long const Mod = 1 << 31;
 bool miller_rabin(long long n);
 long long power(long long a, long long b, long long p);
 
 int main(int argc, char const *argv[]) {
     std::ios_base::sync_with_stdio(false);
     std::cin.tie(NULL);
-    long long n;
-    //srand(unsigned(time(NULL)));
-    std::cin >> n;
-    for (int i = 1; i <= 100000; i++, n = (n + 1234567890) % Mod)
-        std::cout.put(int(miller_rabin(n)) + '0');
-    std::cout.put('\n');
+    long long a, p;
+    srand(unsigned(time(NULL)));
+    while (std::cin >> p >> a && (a || p)) {
+        if (miller_rabin(p))
+            std::cout << "no\n";
+        else
+            std::cout << (a == power(a, p, p) ? "yes\n" : "no\n");
+    }
     return 0;
 }
 

@@ -1,9 +1,10 @@
-// 1630.cpp
+// 5231.cpp
+#include <algorithm>
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
 
-long long ans, cnt = 0, a[1005];
+long long cnt = 0, a[10005];
 
 long long gcd(long long a, long long b) { return a % b ? gcd(b, a % b) : b; }
 long long multi(long long a, long long b, long long mod);
@@ -22,11 +23,14 @@ int main(int argc, char const *argv[]) {
     while (T--) {
         std::cin >> n;
         if (miller_rabin(n))
-            std::cout << "Prime\n";
+            std::cout << n << '\n';
         else {
-            ans = n;
+            cnt = 0;
             findfact(n, 10007);
-            std::cout << ans << '\n';
+            std::sort(a + 1, a + cnt + 1);
+            for (int i = 1; i <= cnt; i++)
+                std::cout << a[i] << ' ';
+            std::cout << '\n';
         }
     }
     return 0;
@@ -102,8 +106,6 @@ void findfact(long long n, int k) {
         return;
     if (miller_rabin(n)) {
         a[++cnt] = n;
-        if (n < ans)
-            ans = n;
         return;
     }
     long long p = n;
