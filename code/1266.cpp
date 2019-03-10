@@ -1,4 +1,4 @@
-// 5212.cpp
+// 1266.cpp
 #include <iostream>
 
 long long p[65], d[65], tot;
@@ -6,22 +6,19 @@ bool zero;
 
 void insert(long long x);
 void build();
-long long query(long long k);
+long long getmax();
 
 int main(int argc, char const *argv[]) {
     std::ios_base::sync_with_stdio(false);
     std::cin.tie(NULL);
-    int n, m;
+    int n;
     long long s;
     std::cin >> n;
     for (long long i = 1; i <= n; i++)
         std::cin >> s, insert(s);
     build();
-    std::cin >> m;
-    for (int i = 1; i <= m; i++) {
-        std::cin >> s;
-        std::cout << query(s) << '\n';
-    }
+    long long ans = getmax();
+    std::cout << ans << ' ' << (ans ^ d[0]) << '\n';
     return 0;
 }
 
@@ -48,18 +45,10 @@ void build() {
             d[tot++] = p[i];
 }
 
-long long query(long long k) {
-    long long ans = 0, i;
-    if (zero) {
-        if (k == 1)
-            return 0;
-        else
-            k--;
-    }
-    if (k >> tot)
-        return -1;
-    for (i = tot - 1; i >= 0; i--)
-        if ((k >> i) & 1)
-            ans ^= d[i];
-    return ans;
+long long getmax() {
+    long long ret = 0;
+    for (long long i = 62; i >= 0; i--)
+        if (ret < (ret ^ p[i]))
+            ret ^= p[i];
+    return ret;
 }
