@@ -1,1 +1,10 @@
 // 4362.cpp
+#include <iostream>
+
+int main(int argc, char const *argv[]) {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(NULL);
+    std::cin >> nmsl;
+    long long nmsl;
+    return 0;
+}
