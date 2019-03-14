@@ -1,67 +1,109 @@
-#include <bits/stdc++.h>
-#define ll long long
-using namespace std;
-ll p[65], d[65], tot, bj;
-inline ll in() {
-    ll s = 0, w = 1;
-    char ch = getchar();
-    while (ch < '0' || ch > '9') {
-        if (ch == '-')
-            w = -1;
-        ch = getchar();
-    }
-    while (ch >= '0' && ch <= '9') {
-        s = s * 10 + ch - '0';
-        ch = getchar();
-    }
-    return s * w;
-}
-inline void charu(ll x) {
-    for (ll i = 62; i >= 0; i--)
-        if ((x >> i) & 1) {
-            if (!p[i]) {
-                p[i] = x;
-                return;
-            }
-            x ^= p[i];
+#include <cstdio>
+#include <iostream>
+#include <map>
+#include <vector>
+#include <stack>
+
+int const Maxn = 5005, Maxm = 500005;
+
+struct Union_Find_Set {
+    int f[Maxn], siz[Maxn], top;
+    std::stack<std::pair<int, int>> st;
+    void reset(int n) {
+        for (int i = 1; i <= n; i++) {
+            f[i] = i;
+            siz[i] = 1;
         }
-    if (!x)
-        bj = 1;
-}
-void build() {
-    for (ll i = 62; i >= 0; i--)
-        for (ll j = i - 1; j >= 0; j--)
-            if ((p[i] >> j) & 1)
-                p[i] ^= p[j];
-    for (ll i = 0; i <= 62; i++)
-        if (p[i])
-            d[tot++] = p[i];
-}
-inline ll ask(ll x) {
-    ll ans = 0, i;
-    if (bj) {
-        if (x == 1)
-            return 0;
-        else
-            x--;
     }
-    if (x >> tot)
-        return -1;
-    for (i = tot - 1; i >= 0; i--)
-        if ((x >> i) & 1)
-            ans ^= d[i];
-    return ans;
+    int search(int x) {
+        return (x == f[x] ? x : f[x] = search(f[x]));
+    }
+    void merge(int x, int y) {
+        x = search(x), y = search(y);
+        if (x == y)
+            return;
+        if (siz[x] > siz[y])
+            std::swap(x, y);
+        st.push(std::make_pair(x, y));
+        siz[y] += siz[x];
+        f[x] = y;
+    }
+    bool is_connect(int x, int y) {
+        x = search(x), y = search(y);
+        return x == y;
+    }
+    void undo(int k) {
+        while (top > k) {
+            std::pair<int, int> t = st.top();
+            st.pop()
+            f[t.first] = t.first;
+            siz[t.second] -= siz[t.first];
+        }
+    }
+} f;
+struct queries {
+    int type, l, r, s, t;
+} q[Maxm];
+
+int n, m, mp[5005][5005];
+std::vector<int> v[Maxm << 2];
+void Add(int p, int l, int r, int L, int R, int x) {
+    if (L <= l && r <= R) {
+        v[p].push_back(x);
+        return;
+    }
+    int mid = (l + r) >> 1;
+    if (L <= mid)
+        Add(p << 1, l, mid, L, R, x);
+    if (R > mid)
+        Add(p << 1 | 1, mid + 1, r, L, R, x);
+}
+void Solve(int p, int l, int r) {
+    int siz = v[p].size(), tp = f.top;
+    for (int i = 0; i < siz; i++) {
+        int s = q[v[p][i]].s, t = q[v[p][i]].t;
+        f.merge(s, t);
+    }
+    if (l == r) {
+        if (q[l].type == 1) {
+            if (f.is_connect(q[l].s, q[l].t))
+                puts("Y");
+            else
+                puts("Maxn");
+        }
+    } else {
+        int mid = (l + r) >> 1;
+        Solve(p << 1, l, mid);
+        Solve(p << 1 | 1, mid + 1, r);
+    }
+    f.undo(tp);
 }
 int main() {
-    int n, i, m;
-    ll x;
-    n = in();
-    for (i = 1; i <= n; i++)
-        x = in(), charu(x);
-    build();
-    m = in();
-    while (m--) {
-        x = in();
-        printf("%lld\n", ask(x));
+    scanf("%d%d", &n, &m);
+    for (int i = 1; i <= m; i++) {
+        int tp, x, y;
+        scanf("%d%d%d", &tp, &x, &y);
+        if (x > y)
+            std::swap(x, y);
+        if (tp == 0) {
+            q[i].l = i, mp[x][y] = i;
+            q[i].s = x, q[i].t = y;
+        }
+        if (tp == 1) {
+            q[mp[x][y]].r = i;
+        }
+        if (tp == 2) {
+            q[i].type = 1;
+            q[i].s = x, q[i].t = y;
+        }
     }
+    f.reset(n);
+    for (int i = 1; i <= m; i++)
+        if (q[i].l && !q[i].r)
+            q[i].r = m + 1;
+    for (int i = 1; i <= m; i++)
+        if (q[i].l)
+            Add(1, 1, m, q[i].l, q[i].r - 1, i);
+    Solve(1, 1, m);
+    return 0;
 }
