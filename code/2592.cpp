@@ -1,3 +1,4 @@
+// 2592.cpp
 #include <iostream>
 
 long long power(long long n, long long k, long long p);
