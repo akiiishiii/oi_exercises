@@ -19,7 +19,7 @@ int main(int argc, char const * argv[]) {
             if (x % i == 0) {
                 long long pk = 1ll;
                 while (x % i == 0)
-                    pk *= 1, x /= i;
+                    pk *= i, x /= i;
                 ans = (ans + C(n, m, p, i, pk)) % p;
             }
         std::cout << ans << "\n";
