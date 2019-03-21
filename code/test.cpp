@@ -1,50 +1,83 @@
-#include <iostream>
+#include <cstdio>
+using namespace std;
+typedef long long LL;
+const int MAXN = 35617;
+int N, G, fact[MAXN + 5], mod = 999911658;
+int prime[5] = {0, 2, 3, 4679, 35617}, Mod[5];
 
-long long const Mod = 10007;
-
-long long power(long long a, long long b);
-inline long long inv(long long x) { return power(x, Mod - 2); }
-long long C(long long n, long long m);
-long long lucas(long long n, long long m);
-
-int main(int argc, char const *argv[]) {
-    std::ios_base::sync_with_stdio(false);
-    std::cin.tie(NULL);
-    long long T, n, m;
-    std::cin >> T;
-    while (T--) {
-        std::cin >> n >> m;
-        std::cout << lucas(n, m) << '\n';
-    }
-    return 0;
+void get_fact() {
+    fact[0] = 1;
+    for (int i = 1; i <= MAXN; i++)
+        fact[i] = (LL)fact[i - 1] * i % mod;
 }
 
-long long power(long long a, long long b) {
-    long long ans = 1;
+int ex_t;
+void exgcd(int a, int b, int &x, int &y) {
+    if (!b) {
+        x = 1;
+        y = 0;
+        return;
+    }
+    exgcd(b, a % b, x, y);
+    ex_t = x;
+    x = y;
+    y = ex_t - (a / b) * y;
+}
+
+int inv(int a, int p) {
+    int x, y;
+    exgcd(a, p, x, y);
+    return (x % p + p) % p;
+}
+
+int calc(int i, int p) {
+    int ret = 1, x, y, n, m;
+    for (x = N, y = i; y; x /= p, y /= p) {
+        n = x % p;
+        m = y % p;
+        ret = (LL)ret * fact[n] % p * inv(fact[m], p) % p *
+              inv(n < m ? 0 : fact[n - m], p) % p;
+    }
+    return ret;
+}
+
+LL qkpow(int x, int b) {
+    int s = 1;
     while (b) {
         if (b & 1)
-            ans = (ans * a) % Mod;
+            s = (LL)s * x % mod;
+        x = (LL)x * x % mod;
         b >>= 1;
-        a = (a * a) % Mod;
     }
-    return ans;
+    return s;
 }
 
-long long C(long long n, long long m) {
-    if (n < m)
+int main() {
+    scanf("%d%d", &N, &G);
+    if (G % (mod + 1) == 0) //坑点
+    {
+        printf("0");
         return 0;
-    long long up = 1, down = 1;
-    for (long long i = n - m + 1; i <= n; ++i)
-        up = up * i % Mod;
-    for (long long i = 1; i <= m; ++i)
-        down = down * i % Mod;
-    return up * inv(down) % Mod;
-}
-
-long long lucas(long long n, long long m) {
-    if (m > n)
-        return 0;
-    if (m == 0)
-        return 1;
-    return C(n % Mod, m % Mod) % Mod * lucas(n / Mod, m / Mod) % Mod;
+    }
+    get_fact();                      //得到阶乘取模结果
+    for (int i = 1; i * i <= N; i++) //枚举因数
+    {
+        if (N % i == 0) {
+            for (int j = 1; j <= 4; j++)
+                Mod[j] = (Mod[j] + calc(i, prime[j])) % prime[j];
+            if (i * i != N)
+                for (int j = 1; j <= 4; j++)
+                    Mod[j] = (Mod[j] + calc(N / i, prime[j])) % prime[j];
+        }
+    }
+    int x, y, b = 0;
+    for (int i = 1; i <= 4; i++) //中国剩余定理
+    {
+        exgcd(mod / prime[i], prime[i], x, y);
+        b = (b + (LL)Mod[i] % mod * (mod / prime[i]) % mod * x % mod) % mod;
+    }
+    b = (b % mod + mod) % mod;
+    mod += 1; //记得mod+1
+    printf("%lld", qkpow(G, b));
+    return 0;
 }
