@@ -3,7 +3,7 @@
 #include <iostream>
 #include <map>
 
-//#define debug
+#define debug
 
 #ifndef debug
 
@@ -17,7 +17,7 @@ std::ofstream out("chess.out");
 
 #endif // debug
 
-int const Maxn = 15;
+int const Maxn = 15, Base = 11;
 int n, m;
 int l[Maxn], a[Maxn][Maxn], b[Maxn][Maxn];
 std::map<long long, int> mp;
@@ -37,7 +37,7 @@ int main(int argc, char const *argv[]) {
             in >> b[i][j];
     long long tot = 0;
     for (int i = 1; i <= n; i++)
-        tot = tot * Maxn + m;
+        tot = tot * Base + m;
     mp[tot] = 0;
     dfs(0);
     out << mp[0] << '\n';
@@ -48,18 +48,18 @@ int dfs(long long x) {
     if (mp.find(x) != mp.end())
         return mp[x];
     for (int i = n; i; i--)
-        l[i] = x % Maxn, x /= Maxn;
+        l[i] = x % Base, x /= Base;
     int opt = 0, ret;
     for (int i = 1; i <= n; i++)
         opt += l[i];
     opt &= 1;
-    ret = opt ? 0x3f3f3f3f : 0xcfcfcfcf;
+    ret = opt ? 1e9 : -1e9;
     for (int i = 1, hash; i <= n; i++)
         if (l[i - 1] > l[i]) {
             l[i]++;
             hash = 0;
             for (int i = 1; i <= n; i++)
-                hash = hash * Maxn + l[i];
+                hash = hash * Base + l[i];
             if (opt)
                 ret = std::min(ret, dfs(hash) - b[i][l[i]]);
             else
