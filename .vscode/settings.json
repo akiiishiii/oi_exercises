@@ -121,5 +121,9 @@
     "clang.executable": "clang",
     "C_Cpp.clang_format_style": "{BasedOnStyle: LLVM, IndentWidth: 4}",
     "workbench.statusBar.feedback.visible": false,
+    "editor.smoothScrolling": true,
+    "editor.cursorSmoothCaretAnimation": true,
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true,
     //"terminal.integrated.fontFamily": "'Lucida console'"
 }
