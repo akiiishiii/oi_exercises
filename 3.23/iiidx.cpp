@@ -2,10 +2,10 @@
 #include <algorithm>
 #include <cmath>
 #include <fstream>
-#include <iostream>
 #include <functional>
+#include <iostream>
 
-#define debug
+//#define debug
 
 #ifndef debug
 
@@ -64,6 +64,7 @@ int main(int argc, char const *argv[]) {
     for (int i = 1; i <= n; i++)
         out << d[ans[i]] << ' ';
     out << '\n';
+    std::cout << "nmsl\n";
     return 0;
 }
 
