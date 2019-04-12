@@ -1,16 +1,21 @@
 // 1003.cpp
+#include <iostream>
+#include <string>
 
+int f[3005][3005];
+std::string a, b;
 
-
-for (int i = 1; i <= n; i++) {
-    // val是决策集合S(i,j)中f[i-1][k]的最大值
-    int val = 0;
-    // j=1时，0可以作为k的取值
-    if (b[0] < a[i]) val = f[i - 1][0];
-    for (int j = 1; j <= m; j++) {
-        if (a[i] == b[j]) f[i][j] = val + 1;
-        else f[i][j] = f[i - 1][j];
-        // j即将增大为j+1，检查j能否进入新的决策集合
-        if (b[j] < a[i]) val = max(val, f[i - 1][j]);
-    }
+int main(int argc, const char *argv[]) {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    std::cin >> a >> b;
+    for (int i = 0; i < a.length(); i++)
+        for (int j = 0; j < b.length(); j++)
+            if (a[i] == b[j])
+                f[i + 1][j + 1] =
+                    std::max(std::max(f[i][j + 1], f[i + 1][j]), f[i][j] + 1);
+            else
+                f[i + 1][j + 1] = std::max(f[i + 1][j], f[i][j + 1]);
+    std::cout << f[a.length()][b.length()] << std::endl;
+    return 0;
 }
