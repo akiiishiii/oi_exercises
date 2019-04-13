@@ -1,45 +1,38 @@
 #include <cstring>
 #include <iostream>
 
-int const Mod = 100000000;
-
-int n, f[200][200][200];
-char a[200], b[200], c[200];
-int g1[200], g2[200], g3[200], g[200];
+int a[105] = {0}, s[105] = {0}, fminn[105][205], fmaxx[105][205];
+int n;
 
 int main(int argc, char const *argv[]) {
     std::ios_base::sync_with_stdio(false);
     std::cin.tie(nullptr);
+    int minn = 0, maxx = 0x3f3f3f3f;
     std::cin >> n;
-    memset(g, 0, sizeof(g));
     for (int i = 1; i <= n; i++)
-        std::cin >> a[i], g1[i] = g[a[i] - 'a'], g[a[i] - 'a'] = i;
-    memset(g, 0, sizeof(g));
-    for (int i = 1; i <= n; i++)
-        std::cin >> b[i], g2[i] = g[b[i] - 'a'], g[b[i] - 'a'] = i;
-    memset(g, 0, sizeof(g));
-    for (int i = 1; i <= n; i++)
-        std::cin >> c[i], g3[i] = g[c[i] - 'a'], g[c[i] - 'a'] = i;
-    for (int i = 0; i <= n; i++)
-        for (int j = 0; j <= n; j++)
-            for (int k = 0; k <= n; k++)
-                f[i][j][k] = 1;
-    for (int i = 1; i <= n; i++)
-        for (int j = 1; j <= n; j++)
-            for (int k = 1; k <= n; k++) {
-                if (a[i] == b[j] && b[j] == c[k]) {
-                    f[i][j][k] = f[i - 1][j - 1][k - 1] * 2;
-                    if (g1[i] && g2[j] && g3[k])
-                        f[i][j][k] -= f[g1[i] - 1][g2[j] - 1][g3[k] - 1];
-                } else {
-                    f[i][j][k] =
-                        f[i - 1][j][k] + f[i][j - 1][k] + f[i][j][k - 1];
-                    f[i][j][k] -= f[i - 1][j - 1][k] + f[i][j - 1][k - 1] +
-                                  f[i - 1][j][k - 1];
-                    f[i][j][k] += f[i - 1][j - 1][k - 1];
-                }
-                f[i][j][k] = (f[i][j][k] % Mod + Mod) % Mod;
+        std::cin >> a[i], a[i + n] = a[i];
+    for (int i = 1; i <= n * 2; i++) {
+        s[i] = s[i - 1] + a[i];
+        fminn[i][i] = fmaxx[i][i] = 0;
+    }
+    for (int t = 1; t <= n - 1; t++)
+        for (int i = 1; i <= 2 * n - t; i++) {
+            int j = i + t;
+            fmaxx[i][j] = 0x3f3f3f3f;
+            fminn[i][j] = 0;
+            for (int k = i; k < j; k++) {
+                fminn[i][j] =
+                    std::max(fminn[i][j], fminn[i][k] + fminn[k + 1][j]);
+                fmaxx[i][j] =
+                    std::min(fmaxx[i][j], fmaxx[i][k] + fmaxx[k + 1][j]);
             }
-    std::cout << (f[n][n][n] - 1) % Mod << '\n';
+            fminn[i][j] = fminn[i][j] + s[j] - s[i - 1];
+            fmaxx[i][j] = fmaxx[i][j] + s[j] - s[i - 1];
+        }
+    for (int i = 1; i <= n; i++) {
+        minn = std::max(minn, fminn[i][i + n - 1]);
+        maxx = std::min(maxx, fmaxx[i][i + n - 1]);
+    }
+    std::cout << maxx << '\n' << minn << '\n';
     return 0;
 }
