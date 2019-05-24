@@ -2,9 +2,31 @@
 #include <iostream>
 
 int n, ans;
-int a[10][10], b[10][10];
+int a[7][7], b[7][7];
 
-int check(int x) {
+int calc(int x);
+void dfs(int x, int k);
+
+int main(int argc, char const *argv[]) {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    char c;
+    std::cin >> n;
+    while (n--) {
+        for (int i = 1; i <= 5; i++)
+            for (int j = 1; j <= 5; j++)
+                std::cin >> c, a[i][j] = (c - '0');
+        ans = 0x3f3f3f3f;
+        dfs(1, 0);
+        if (ans <= 6)
+            std::cout << ans << '\n';
+        else
+            std::cout << "-1\n";
+    }
+    return 0;
+}
+
+int calc(int x) {
     int sum = x;
     for (int i = 1; i <= 5; i++)
         for (int j = 1; j <= 5; j++)
@@ -27,10 +49,10 @@ int check(int x) {
     return sum;
 }
 
-int dfs(int x, int k) {
+void dfs(int x, int k) {
     if (x > 5) {
-        ans = std::min(ans, check(k));
-        return 0;
+        ans = std::min(ans, calc(k));
+        return;
     }
     a[1][x] = !a[1][x];
     a[1][x - 1] = !a[1][x - 1];
@@ -42,22 +64,5 @@ int dfs(int x, int k) {
     a[1][x + 1] = !a[1][x + 1];
     a[2][x] = !a[2][x];
     dfs(x + 1, k);
-}
-
-int main(int argc, char const *argv[]) {
-    std::ios_base::sync_with_stdio(false);
-    std::cin.tie(nullptr);
-    scanf("%d", &n);
-    while (n--) {
-        for (int i = 1; i <= 5; i++)
-            for (int j = 1; j <= 5; j++)
-                scanf("%1d", &a[i][j]);
-        ans = 0x3f3f3f3f;
-        dfs(1, 0);
-        if (ans <= 6)
-            std::cout << ans << '\n';
-        else
-            std::cout << "-1\n";
-    }
-    return 0;
+    return;
 }
