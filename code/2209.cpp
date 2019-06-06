@@ -1,8 +1,8 @@
 // 2209.cpp
 #include <iostream>
 
-int a[300010], q[300010], n, m;
-long long sum[300010], ans;
+int a[200010], q[200010], n, m;
+long long sum[200010] = {0}, ans = 0;
 
 int main(int argc, char const *argv[]) {
     std::ios_base::sync_with_stdio(false);
