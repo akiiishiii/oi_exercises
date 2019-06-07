@@ -1,27 +1,31 @@
 // 2209.cpp
+#include <functional>
 #include <iostream>
+#include <queue>
+#include <vector>
 
-int a[200010], q[200010], n, m;
-long long sum[200010] = {0}, ans = 0;
+int n, m, s[200005], ans[200005], maxx = 0xcfcfcfcf;
+
+struct cmp : public std::binary_function<int, int, bool> {
+    bool operator()(int const &a, int const &b) const { return s[a] > s[b]; }
+};
+
+std::priority_queue<int, std::vector<int>, cmp> q;
 
 int main(int argc, char const *argv[]) {
     std::ios_base::sync_with_stdio(false);
-    std::cin.tie(nullptr);
+    std::cin.tie(NULL);
     std::cin >> n >> m;
-    for (int i = 1; i <= n; i++) {
-        std::cin >> a[i];
-        sum[i] = sum[i - 1] + a[i];
+    for (int i = 1, x; i <= n; ++i)
+        std::cin >> x, s[i] = s[i - 1] + x;
+    q.push(0);
+    for (int i = 1; i <= n; ++i) {
+        while (!q.empty() && q.top() < i - m)
+            q.pop();
+        ans[i] = s[i] - s[q.top()];
+        maxx = std::max(ans[i], maxx);
+        q.push(i);
     }
-    int l = 1, r = 1;
-    q[l] = 0;
-    for (int i = 1; i <= n; i++) {
-        while (l <= r && q[l] < i - m)
-            l++;
-        ans = std::max(ans, sum[i] - sum[q[l]]);
-        while (l <= r && sum[q[r]] >= sum[i])
-            r--;
-        q[++r] = i;
-    }
-    std::cout << ans << '\n';
+    std::cout << maxx << '\n';
     return 0;
 }
