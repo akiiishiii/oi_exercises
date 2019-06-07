@@ -14,7 +14,7 @@ std::priority_queue<int, std::vector<int>, cmp> q;
 
 int main(int argc, char const *argv[]) {
     std::ios_base::sync_with_stdio(false);
-    std::cin.tie(NULL);
+    std::cin.tie(nullptr);
     std::cin >> n >> m;
     for (int i = 1, x; i <= n; ++i)
         std::cin >> x, s[i] = s[i - 1] + x;
