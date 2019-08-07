@@ -4,12 +4,10 @@
 
 int const Maxn = 35000;
 double const eps = 1e-5;
-int p[Maxn], vst[Maxn], cnt;
+int p[Maxn], cnt;
+bool vst[Maxn];
 
-bool ispow(long long x, int d) {
-    double t = pow(x, 1.0 / d);
-    return (std::abs(round(t) - t) < eps);
-}
+bool ispow(long long x, int d);
 
 int main(int argc, char const *argv[]) {
     std::ios_base::sync_with_stdio(false);
@@ -18,7 +16,7 @@ int main(int argc, char const *argv[]) {
         if (!vst[i])
             p[++cnt] = i;
         for (int j = 1; j <= cnt && i * p[j] < Maxn; j++) {
-            vst[i * p[j]] = 1;
+            vst[i * p[j]] = true;
             if (i % p[j] == 0)
                 break;
         }
@@ -49,4 +47,9 @@ int main(int argc, char const *argv[]) {
         std::cout << ans << '\n';
     }
     return 0;
+}
+
+bool ispow(long long x, int d) {
+    double t = pow(x, 1.0 / d);
+    return (std::abs(round(t) - t) < eps);
 }
