@@ -104,8 +104,8 @@
     "files.trimTrailingWhitespace": true, // 保存时，删除每一行末尾的空格
     "terminal.integrated.shell.windows": "C:\\Windows\\System32\\cmd.exe",
     //  "editor.minimap.enabled": false,
-    //  "editor.fontFamily": "等距更纱黑体 SC",
-    "editor.fontFamily": "Consolas",
+    "editor.fontFamily": "等距更纱黑体 J, Consolas",
+    //"editor.fontFamily": "Consolas",
     "files.encoding": "utf8",
     "editor.cursorStyle": "underline",
     "editor.dragAndDrop": false,
