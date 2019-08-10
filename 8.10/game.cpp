@@ -23,7 +23,7 @@ int tot, n;
 
 int main(int argc, char const *argv[]) {
     std::ios_base::sync_with_stdio(false);
-    in.tie(NULL);
+    in.tie(nullptr);
     in >> n;
     for (int i = 2; i <= 1000; i++) {
         if (!vis[i])

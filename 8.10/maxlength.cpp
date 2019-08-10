@@ -1,13 +1,12 @@
 // maxlength.cpp
+#include <algorithm>
 #include <cmath>
 #include <cstring>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
-#include <queue>
-#include <string>
 
-//#define debug
+#define debug
 
 #ifndef debug
 
@@ -21,73 +20,55 @@ std::ofstream out("maxlength.out");
 
 #endif // debug
 
-int const dx[] = {0, 1, 0, -1}, dy[] = {1, 0, -1, 0};
-int head[1005], ver[2005], Next[2005], edge[2005];
-std::string s[31];
-double dis[1010][1010], ans;
-int d[1010], blo[1010];
-bool v[1010];
-int n, m, t, tot;
+int const dx[4] = {0, -1, 0, 1}, dy[4] = {1, 0, -1, 0};
+int n, m, T, ans, cnt, d[31][31];
+bool map[31][31];
 
-inline int id(int x, int y) { return (x - 1) * m + y; }
-inline void add(int x, int y, int z);
-void spfa(int k);
+void dfs(int x, int y, int num, int sum);
 
 int main(int argc, char const *argv[]) {
     std::ios_base::sync_with_stdio(false);
-    in.tie(NULL);
-    in >> n >> m >> t;
-    for (int i = 1; i <= n; i++) {
-        in >> s[i];
-        s[i] = ' ' + s[i];
-    }
-    for (int i = 1; i <= n; i++)
-        for (int j = 1; j <= m; j++)
-            for (int k = 1; k <= n; k++)
-                for (int l = 1; l <= m; l++)
-                    dis[id(i, j)][id(k, l)] =
-                        sqrt((i - k) * (i - k) + (j - l) * (j - l));
-    for (int i = 1; i <= n; i++)
-        for (int j = 1; j <= m; j++) {
-            if (s[i][j] == '1')
-                blo[id(i, j)] = 1;
-            for (int k = 0; k < 4; k++) {
-                int nx = i + dx[k], ny = j + dy[k];
-                if (nx < 1 || ny < 1 || nx > n || ny > m)
-                    continue;
-                int w = s[nx][ny] - '0';
-                add(id(i, j), id(nx, ny), w);
+    in.tie(nullptr);
+    in >> n >> m >> T;
+    for (int i = 1; i <= n; ++i)
+        for (int j = 1; j <= m; ++j) {
+            char c;
+            in >> c;
+            if (c == '\n') {
+                j--;
+                continue;
             }
+            if (c == '1')
+                cnt++;
+            map[i][j] = c - '0';
         }
-    for (int i = 1; i <= n * m; i++)
-        spfa(i);
-    out << std::fixed << std::setprecision(6) << ans << '\n';
+    for (int i = 1; i <= n; ++i)
+        for (int j = 1; j <= m; ++j) {
+            for (int x = 1; x <= n; ++x)
+                for (int y = 1; y <= m; ++y)
+                    d[x][y] = 2147483647;
+            dfs(i, j, map[i][j], cnt);
+            for (int x = 1; x <= n; ++x)
+                for (int y = 1; y <= m; ++y)
+                    if (d[x][y] <= T)
+                        ans = std::max(ans,
+                                       (x - i) * (x - i) + (y - j) * (y - j));
+        }
+    std::cout << std::fixed << std::setprecision(6) << sqrt(ans) << '\n';
     return 0;
 }
 
-inline void add(int x, int y, int z) {
-    ver[++tot] = y, edge[tot] = z, Next[tot] = head[x], head[x] = tot;
-}
-
-void spfa(int k) {
-    std::queue<int> q;
-    memset(d, 0x3f, sizeof(d));
-    memset(v, 0, sizeof(v));
-    d[k] = blo[k];
-    v[k] = true;
-    q.push(k);
-    while (q.size()) {
-        int x = q.front();
-        q.pop();
-        v[x] = false;
-        ans = std::max(ans, dis[k][x]);
-        for (int i = head[x]; i; i = Next[i]) {
-            int y = ver[i], z = edge[i];
-            if (d[y] > d[x] + z) {
-                d[y] = d[x] + z;
-                if (!v[y] && d[y] <= t)
-                    q.push(y), v[y] = true;
-            }
-        }
+void dfs(int x, int y, int num, int sum) {
+    if (cnt - num < sum)
+        return; //
+    if (num > T)
+        return;
+    if (num >= d[x][y])
+        return;
+    d[x][y] = num;
+    for (int i = 0; i < 4; ++i) {
+        int nx = x + dx[i], ny = y + dy[i];
+        if (nx >= 1 && nx <= n && ny >= 1 && ny <= m)
+            dfs(nx, ny, num + map[nx][ny], sum - map[nx][ny]);
     }
 }
