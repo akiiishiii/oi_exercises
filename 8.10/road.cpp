@@ -24,7 +24,7 @@ char s[15][15];
 struct matrix {
     long long f[105][105];
     matrix() { memset(f, 0, sizeof(f)); }
-    matrix operator*(matrix const &m) {
+    matrix operator*(matrix const &m) const {
         matrix res;
         for (int i = 1; i <= n; i++)
             for (int j = 1; j <= n; j++)

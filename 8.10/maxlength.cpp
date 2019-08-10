@@ -6,7 +6,7 @@
 #include <iomanip>
 #include <iostream>
 
-#define debug
+//#define debug
 
 #ifndef debug
 
