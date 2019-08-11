@@ -16,7 +16,7 @@ std::ofstream out("get.out");
 
 #endif // debug
 
-int a[100005], f[100005], n;
+int a[200005], f[200005], n;
 
 int main(int argc, char const *argv[]) {
     std::ios_base::sync_with_stdio(false);
@@ -31,5 +31,3 @@ int main(int argc, char const *argv[]) {
     out << (f[n << 1] >> 1) << '\n';
     return 0;
 }
-
-// f[i] = f[j] + 1 (1 ≤ j ≤ i - 1, |a[i] - a[j]| ≠ 1)

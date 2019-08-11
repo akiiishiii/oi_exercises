@@ -16,25 +16,39 @@ std::ofstream out("gcd.out");
 
 #endif // debug
 
-int f[1000005] = {0};
-
-int gcd(int a, int b) { return b ? gcd(b, a % b) : a; }
+int const Maxn = 1000010, Maxm = 80000;
+long long a[Maxn], p[Maxm], phi[Maxn], t;
+long long ans[Maxn];
+bool b[Maxn];
 
 int main(int argc, char const *argv[]) {
     std::ios_base::sync_with_stdio(false);
     in.tie(NULL);
-    int t, n, sum;
-    in >> t;
-    while (t--) {
-        in >> n;
-        if (!f[n]) {
-            sum = 0;
-            for (int i = 1; i <= n - 1; i++)
-                for (int j = i + 1; j <= n; j++)
-                    sum += gcd(i, j);
-            out << (f[n] = sum) << '\n';
-        } else
-            out << f[n] << '\n';
+    long long tot, n = 0;
+    in >> tot;
+    for (int i = 1; i <= tot; i++) {
+        std::cin >> a[i];
+        n = std::max(n, a[i]);
     }
+    phi[1] = 1;
+    for (int i = 2; i <= n; i++) {
+        if (!b[i])
+            phi[i] = i - 1, p[++t] = i;
+        for (int j = 1; j <= t && i * p[j] <= n; j++) {
+            b[i * p[j]] = true;
+            if (i % p[j] == 0) {
+                phi[i * p[j]] = phi[i] * p[j];
+                break;
+            } else
+                phi[i * p[j]] = phi[i] * (p[j] - 1);
+        }
+    }
+    for (int i = 2; i <= n; i++)
+        for (int j = 1; j <= n / i; j++)
+            ans[i * j] += phi[i] * j;
+    for (int i = 2; i <= n; i++)
+        ans[i] += ans[i - 1];
+    for (int i = 1; i <= tot; i++)
+        out << ans[a[i]] << '\n';
     return 0;
 }
