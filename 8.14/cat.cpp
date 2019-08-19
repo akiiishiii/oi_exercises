@@ -5,7 +5,7 @@
 
 //#define debug
 
-#ifndef debug2
+#ifndef debug
 
 std::ifstream in("cat.in");
 std::ofstream out("cat.out");
