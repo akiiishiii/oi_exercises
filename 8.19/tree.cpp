@@ -53,7 +53,7 @@ int main(int argc, char const *argv[]) {
         add(x, y), add(y, x);
     }
     dfs1(1, 0, 0);
-    if (n <= 1000) {
+    /*if (n <= 1000) {
         while (q--) {
             in >> com >> x;
             if (com == 1) {
@@ -65,23 +65,23 @@ int main(int argc, char const *argv[]) {
             } else
                 out << sum(x) << '\n';
         }
-    } else {
-        dfs2(1, 1);
-        build(1, 1, cnt - 1);
-        for (int i = 1; i <= n; i++)
-            add(1, p[i], pt[i]);
-        while (q--) {
-            in >> com >> x;
-            if (com == 1) {
-                in >> y;
-                add(1, p[x], y);
-            } else if (com == 2) {
-                //???
-            } else {
-                found = false;
-                out << query(1, 1, p[x], 0) << '\n';
-            }
+    } else {*/
+    dfs2(1, 1);
+    build(1, 1, cnt - 1);
+    for (int i = 1; i <= n; i++)
+        add(1, p[i], pt[i]);
+    while (q--) {
+        in >> com >> x;
+        if (com == 1) {
+            in >> y;
+            add(1, p[x], y);
+        } else if (com == 2) {
+            add(1, 1, p[x], y);
+        } else {
+            found = false;
+            out << query(1, 1, p[x], 0) << '\n';
         }
+        //}
     }
     return 0;
 }
@@ -121,6 +121,8 @@ void dfs2(int u, int sp) {
 void build(int v, int l, int r) {
     tree[v].l = l, tree[v].r = r;
     tree[v].sum = tree[v].add = 0;
+    if (l == r)
+        return;
     int mid = (l + r) >> 1;
     build(v << 1, l, mid);
     build((v << 1) | 1, mid + 1, r);
