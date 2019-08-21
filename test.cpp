@@ -1,6 +1,6 @@
 // test.cpp
-#include <iostream>
 #include <cctype>
+#include <iostream>
 
 int main(int argc, char const *argv[]) {
     std::ios_base::sync_with_stdio(false);
@@ -8,7 +8,7 @@ int main(int argc, char const *argv[]) {
     int n, sta;
     char c;
     std::cin >> n;
-    std::cin.get(); // 第一行的换行符
+    std::cin.get();
     for (int i = 1; i <= n; i++) {
         sta = 0;
         while ((c = std::cin.get()) != '\n')
