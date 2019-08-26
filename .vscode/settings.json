@@ -96,7 +96,8 @@
         "algorithm": "cpp",
         "queue": "cpp",
         "stdio.h": "c",
-        "math.h": "c"
+        "math.h": "c",
+        "memory_resource": "cpp"
     },
     "C_Cpp.intelliSenseEngineFallback": "Disabled", // 效果效果比cpptools要好
     "files.autoGuessEncoding": false,
